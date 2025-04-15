@@ -213,6 +213,7 @@
     const auth = firebase.auth();
 
     let lastMatchedIntent = null;
+    let context = null;
     let currentUser = null;
 
     auth.onAuthStateChanged(user => {
@@ -284,17 +285,30 @@
 
       if (results.length > 0 && results[0].score < 0.5) {
         lastMatchedIntent = results[0].item;
-        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
-      }
 
-      return "Sorry, I couldn't understand that.";
+        // If there's no context yet, return the main answer
+        if (!lastMatchedIntent.context || !Array.isArray(lastMatchedIntent.context)) {
+          return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
+        }
+
+        // Check context values in the user input
+        for (let i = 0; i < lastMatchedIntent.context.length; i++) {
+          if (userInput.includes(lastMatchedIntent.context[i])) {
+            return lastMatchedIntent.contextAnswers[i] || "Sorry, I couldn't find a suitable follow-up answer.";
+          }
+        }
+
+        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
+      } else {
+        return "Sorry, I couldn't understand your question.";
+      }
     }
 
     function sendMessage() {
       const userInput = document.getElementById("userInput").value;
       addMessage(userInput, "user");
-      const response = getIntentResponse(userInput);
-      addMessage(response, "bot", true);
+      const botResponse = getIntentResponse(userInput);
+      addMessage(botResponse, "bot", true);
       document.getElementById("userInput").value = "";
     }
   </script>
