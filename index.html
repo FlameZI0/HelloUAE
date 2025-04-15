@@ -5,161 +5,159 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DuneAI</title>
   <style>
-   body {
-       font-family: Arial, sans-serif;
-       background-color: #343541;
-       margin: 0;
-       display: flex;
-       flex-direction: column;
-       align-items: center;
-       height: 100vh;
-       justify-content: center;
-       color: white;
-     }
-     #auth-bar {
-       position: fixed;
-       top: 20px;
-       right: 20px;
-       display: flex;
-       justify-content: space-between;
-       width: auto;
-       padding: 10px 15px;
-       background: #2c2d3a;
-       border-radius: 8px;
-       align-items: center;
-     }
-     #login-btn, #logout-btn {
-       background: #0078ff;
-       padding: 10px 15px;
-       border-radius: 25px;
-       color: white;
-       cursor: pointer;
-     }
-     .chat-container {
-       width: 100%;
-       max-width: 600px;
-       height: 85vh;
-       background: #40414f;
-       border-radius: 10px;
-       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-       display: flex;
-       flex-direction: column;
-       overflow: hidden;
-     }
-     #chat-box {
-       flex-grow: 1;
-       padding: 15px;
-       overflow-y: auto;
-       display: flex;
-       flex-direction: column;
-       gap: 10px;
-       background: #26262f;
-       scrollbar-width: none;
-     }
-     .message {
-       max-width: 75%;
-       padding: 12px;
-       border-radius: 12px;
-       word-wrap: break-word;
-       font-size: 16px;
-       line-height: 1.5;
-     }
-     .message-user {
-       align-self: flex-end;
-       background: #0078ff;
-       color: white;
-     }
-     .message-bot {
-       align-self: flex-start;
-       background: #444654;
-       color: white;
-     }
-     .input-container {
-       display: flex;
-       padding: 15px;
-       background: #40414f;
-       border-top: 1px solid #565869;
-     }
-     input[type="text"] {
-       flex-grow: 1;
-       padding: 12px;
-       border: none;
-       border-radius: 25px;
-       outline: none;
-       font-size: 16px;
-       background: #565869;
-       color: white;
-     }
-     button {
-       margin-left: 10px;
-       padding: 12px 15px;
-       border: none;
-       border-radius: 25px;
-       background: #0078ff;
-       color: white;
-       cursor: pointer;
-       font-size: 16px;
-     }
-     img {
-       width: 100px;
-     }
-     #logo {
-       position: fixed;
-       top: 20px;
-       left: 20px;
-       display: flex;
-       justify-content: space-between;
-       width: auto;
-       padding: 10px 15px;
-       background: #2c2d3a;
-       border-radius: 8px;
-       align-items: center;
-     }
-     #help {
-       display: inline-block;
-       padding: 10px 20px;
-       background-color: #4CAF50; /* green background */
-       color: white;
-       text-decoration: none;
-       border: none;
-       border-radius: 8px;
-       font-size: 16px;
-       cursor: pointer;
-       transition: background-color 0.3s ease;
-     }
- 
-     #help:hover {
-       background-color: #45a049; /* darker green on hover */
-     }
-     #signins {
-       position: fixed;
-       top: 20px;
-       right: 20px;
-       display: flex;
-       justify-content: space-between;
-       width: auto;
-       padding: 10px 15px;
-       background: #2c2d3a;
-       border-radius: 8px;
-       align-items: center;
-     }
-     #google-signin {
-       background-color: #fbbc05; /* Google yellow */
-       padding: 10px 20px;
-       border-radius: 25px;
-       color: white;
-       font-size: 16px;
-       cursor: pointer;
-     }
- 
-     #anonymous-signin {
-       background-color: #6c757d; /* Neutral gray for anonymous sign-in */
-       padding: 10px 20px;
-       border-radius: 25px;
-       color: white;
-       font-size: 16px;
-       cursor: pointer;
-     }
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #343541;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+        color: white;
+    }
+    #auth-bar {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: auto;
+        padding: 10px 15px;
+        background: #2c2d3a;
+        border-radius: 8px;
+        align-items: center;
+    }
+    #login-btn, #logout-btn {
+        background: #0078ff;
+        padding: 10px 15px;
+        border-radius: 25px;
+        color: white;
+        cursor: pointer;
+    }
+    .chat-container {
+        width: 100%;
+        max-width: 600px;
+        height: 85vh;
+        background: #40414f;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    #chat-box {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #26262f;
+        scrollbar-width: none;
+    }
+    .message {
+        max-width: 75%;
+        padding: 12px;
+        border-radius: 12px;
+        word-wrap: break-word;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .message-user {
+        align-self: flex-end;
+        background: #0078ff;
+        color: white;
+    }
+    .message-bot {
+        align-self: flex-start;
+        background: #444654;
+        color: white;
+    }
+    .input-container {
+        display: flex;
+        padding: 15px;
+        background: #40414f;
+        border-top: 1px solid #565869;
+    }
+    input[type="text"] {
+        flex-grow: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        outline: none;
+        font-size: 16px;
+        background: #565869;
+        color: white;
+    }
+    button {
+        margin-left: 10px;
+        padding: 12px 15px;
+        border: none;
+        border-radius: 25px;
+        background: #0078ff;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    img {
+        width: 100px;
+    }
+    #logo {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: auto;
+        padding: 10px 15px;
+        background: #2c2d3a;
+        border-radius: 8px;
+        align-items: center;
+    }
+    #help {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    #help:hover {
+        background-color: #45a049;
+    }
+    #signins {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: auto;
+        padding: 10px 15px;
+        background: #2c2d3a;
+        border-radius: 8px;
+        align-items: center;
+    }
+    #google-signin {
+        background-color: #fbbc05;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    #anonymous-signin {
+        background-color: #6c757d;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -257,112 +255,45 @@
 
     function addMessage(message, sender) {
       if (typeof message !== "string") {
-        message = JSON.stringify(message); // or message = String(message);
+        message = JSON.stringify(message);
       }
-    
-    const messageWithBreaks = message.replace(/\n/g, "<br>");
+
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");        
+      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
       messageElement.innerHTML = message.replace(/\n/g, "<br>");
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    const fuseOptions = {
-      includeScore: true,
-      keys: ["prompts", "keywords"]
-    };
+    async function getBestMatchResponse(userMessage) {
+      const snapshot = await db.collection("intents").get();
+      const intents = snapshot.docs.map(doc => doc.data());
+      const fuse = new Fuse(intents, { keys: ["prompts", "keywords"] });
+      const result = fuse.search(userMessage);
 
-    let intentsCache = [];
-
-    db.collection("intents").get().then(snapshot => {
-      intentsCache = snapshot.docs.map(doc => doc.data());
-    });
-
-    function getIntentResponse(userInput) {
-      if (!userInput.trim()) {
-        return "Please enter something!";
+      if (result.length > 0) {
+        const matchedIntent = result[0].item;
+        if (matchedIntent.context && matchedIntent.contextAnswers) {
+          context = matchedIntent.context;
+          return matchedIntent.contextAnswers;
+        }
+        return matchedIntent.answers;
       }
 
-      const fuse = new Fuse(intentsCache, fuseOptions);
-      const results = fuse.search(userInput);
-
-      if (results.length > 0 && results[0].score < 0.1) {
-        lastMatchedIntent = results[0].item;
-        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
-      } else {
-        return "Sorry, I couldn't understand your question.";
-      }
+      return "Sorry, I didn't understand that.";
     }
 
-    function sendMessage() {
-      const userInput = document.getElementById("userInput").value.trim();
-      if (userInput === "") return;
+    async function sendMessage() {
+      const userMessage = document.getElementById("userInput").value.trim();
+      if (!userMessage) return;
 
-      addMessage(userInput, "user");
-      const botResponse = getIntentResponse(userInput);
-      addMessage(botResponse, "bot", true);
+      addMessage(userMessage, "user");
       document.getElementById("userInput").value = "";
 
-      getBestMatchResponse(userInput).then(intent => {
-        if (intent) {
-          const contextResponse = lastMatchedIntent.context ? lastMatchedIntent.contextAnswers : [];
-          addMessage(lastMatchedIntent.answers, "bot");
-        } else {
-          addMessage("Sorry, I didn't understand that.", "bot");
-        }
-      });
-    }
-
-    function getBestMatchResponse(userInput) {
-      return db.collection("intents").get().then(snapshot => {
-        const intents = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          intents.push({
-            id: doc.id,
-            ...data
-          });
-        });
-    
-        const fuse = new Fuse(intents, {
-          keys: ["prompts", "keywords", "context"],
-          includeScore: true,
-        });
-    
-        const results = fuse.search(userInput);
-        if (results.length > 0 && results[0].score < 0.5) {
-          lastMatchedIntent = results[0].item;
-    
-          // 1. Context check
-          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers) {
-            for (let i = 0; i < lastMatchedIntent.context.length; i++) {
-              if (userInput.includes(lastMatchedIntent.context[i])) {
-                const ctxAnswer = lastMatchedIntent.contextAnswers[i];
-                if (Array.isArray(ctxAnswer)) {
-                  // If context answer is an array, pick one randomly
-                  const randomIndex = Math.floor(Math.random() * ctxAnswer.length);
-                  return ctxAnswer[randomIndex];
-                  console.log("ctxAnswer:", ctxAnswer);
-                } else {
-                  return ctxAnswer; // Plain string
-                }
-              }
-            }
-          }
-    
-          // 2. No context match? Pick from regular answers randomly
-          if (Array.isArray(lastMatchedIntent.answers) && lastMatchedIntent.answers.length > 0) {
-            const randomIndex = Math.floor(Math.random() * lastMatchedIntent.answers.length);
-            return lastMatchedIntent.answers[randomIndex];
-          }
-        }
-    
-        return "Sorry, I couldn't find a suitable answer.";
-      });
+      const response = await getBestMatchResponse(userMessage);
+      addMessage(response, "bot");
     }
   </script>
-
 </body>
 </html>
