@@ -302,7 +302,7 @@
       getBestMatchResponse(userInput).then(intent => {
         if (intent) {
           const contextResponse = lastMatchedIntent.context ? lastMatchedIntent.contextAnswers : [];
-          addMessage(lastMatchedIntent.answers[Math.floor(Math.random() * months.length)], "bot");
+          addMessage(lastMatchedIntent.answers[Math.floor(Math.random() * answers.length)], "bot");
 
         } else {
           addMessage("Sorry, I didn't understand that.", "bot");
