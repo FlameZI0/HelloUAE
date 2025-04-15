@@ -288,7 +288,7 @@
       const fuse = new Fuse(intentsCache, fuseOptions);
       const results = fuse.search(userInput);
 
-      if (results.length > 0 && results[0].score < 0.5) {
+      if (results.length > 0 && results[0].score < 0.1) {
         lastMatchedIntent = results[0].item;
         return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
       } else {
@@ -343,7 +343,7 @@
                 if (Array.isArray(ctxAnswer)) {
                   // If context answer is an array, pick one randomly
                   const randomIndex = Math.floor(Math.random() * ctxAnswer.length);
-                  return ctxAnswer[i];
+                  return ctxAnswer[randomIndex];
                   console.log("ctxAnswer:", ctxAnswer);
                 } else {
                   return ctxAnswer; // Plain string
