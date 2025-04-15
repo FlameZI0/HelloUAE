@@ -264,7 +264,7 @@
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
       messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");        
-      messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
+      messageElement.innerHTML = message.replace(/\n/g, "<br>");
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
