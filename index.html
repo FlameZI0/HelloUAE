@@ -271,19 +271,36 @@
       const intents = snapshot.docs.map(doc => doc.data());
       const fuse = new Fuse(intents, { keys: ["prompts", "keywords"] });
       const result = fuse.search(userMessage);
-
+    
       if (result.length > 0) {
         const matchedIntent = result[0].item;
-        if (matchedIntent.context && matchedIntent.contextAnswers) {
-          context = matchedIntent.context;
-          return matchedIntent.contextAnswers;
+    
+        // Handle context and contextAnswers if present
+        if (
+          Array.isArray(matchedIntent.context) &&
+          Array.isArray(matchedIntent.contextAnswers) &&
+          matchedIntent.context.length === matchedIntent.contextAnswers.length
+        ) {
+          const contextIndex = matchedIntent.context.findIndex(ctx =>
+            ctx.toLowerCase() === userMessage.toLowerCase()
+          );
+    
+          if (contextIndex !== -1) {
+            context = matchedIntent.context[contextIndex];
+            return matchedIntent.contextAnswers[contextIndex];
+          }
         }
-        return matchedIntent.answers;
+    
+        // Otherwise, return a random normal answer
+        if (Array.isArray(matchedIntent.answers) && matchedIntent.answers.length > 0) {
+          const randomIndex = Math.floor(Math.random() * matchedIntent.answers.length);
+          return matchedIntent.answers[randomIndex];
+        }
       }
-
+    
       return "Sorry, I didn't understand that.";
     }
-
+    
     async function sendMessage() {
       const userMessage = document.getElementById("userInput").value.trim();
       if (!userMessage) return;
