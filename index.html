@@ -254,7 +254,7 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender, isHTML = false) {
+    function addMessage(message, sender, isHTML = true) {
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
       messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
@@ -269,7 +269,7 @@
       keys: ["keywords", "prompts"], // Search in the keywords and prompts
     };
 
-        async function sendMessage() {
+    async function sendMessage() {
       const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
       const text = input.toLowerCase();
       if (!text) return;
