@@ -320,29 +320,40 @@
             ...data
           });
         });
-
+    
         const fuse = new Fuse(intents, {
           keys: ["prompts", "keywords", "context"],
           includeScore: true,
         });
-
+    
         const results = fuse.search(userInput);
         if (results.length > 0 && results[0].score < 0.5) {
           lastMatchedIntent = results[0].item;
-
+    
+          let response = "";
+    
+          // Check if the intent has context-based answers
           if (lastMatchedIntent.context) {
             for (let i = 0; i < lastMatchedIntent.context.length; i++) {
               if (userInput.includes(lastMatchedIntent.context[i])) {
-                return lastMatchedIntent.contextAnswers[i] || "Sorry, I couldn't find a suitable follow-up answer.";
+                response = lastMatchedIntent.contextAnswers[i] || "Sorry, I couldn't find a suitable follow-up answer.";
+                break; // Exit once we find a match for context
               }
             }
           }
+    
+          // If no context-based response, use a random answer from the intent's answers
+          if (!response && lastMatchedIntent.answers && lastMatchedIntent.answers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * lastMatchedIntent.answers.length);
+            response = lastMatchedIntent.answers[randomIndex];
+          }
+    
+          return response || "Sorry, I couldn't find a suitable answer.";
         }
-
-        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
+    
+        return "Sorry, I couldn't find a suitable answer.";
       });
     }
-
   </script>
 
 </body>
