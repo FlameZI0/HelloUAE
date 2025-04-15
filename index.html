@@ -255,10 +255,15 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender, isHTML = false) {
+    function addMessage(message, sender) {
+      if (typeof message !== "string") {
+        message = JSON.stringify(message); // or message = String(message);
+      }
+    
+    const messageWithBreaks = message.replace(/\n/g, "<br>");
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
+      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");        
       messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -338,7 +343,8 @@
                 if (Array.isArray(ctxAnswer)) {
                   // If context answer is an array, pick one randomly
                   const randomIndex = Math.floor(Math.random() * ctxAnswer.length);
-                  return ctxAnswer[randomIndex];
+                  return ctxAnswer[i];
+                  console.log("ctxAnswer:", ctxAnswer);
                 } else {
                   return ctxAnswer; // Plain string
                 }
