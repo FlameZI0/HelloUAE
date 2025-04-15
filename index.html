@@ -255,62 +255,62 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender, isHTML = false) {
-      const chatBox = document.getElementById("chat-box");
+    function addMessage(message, sender) {
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
-      messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
-      chatBox.appendChild(messageElement);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      messageElement.classList.add("message");
+      messageElement.classList.add(sender === 'user' ? "message-user" : "message-bot");
+      messageElement.textContent = message;
+      document.getElementById("chat-box").appendChild(messageElement);
+      document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
     }
 
-    const fuseOptions = {
-      includeScore: true,
-      keys: ["prompts", "keywords"]
-    };
+    function getBestMatchResponse(inputText) {
+      return db.collection("intents").get().then(snapshot => {
+        const intents = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          intents.push({
+            id: doc.id,
+            ...data
+          });
+        });
 
-    let intentsCache = [];
+        // Create a Fuse.js instance
+        const fuse = new Fuse(intents, {
+          keys: ["prompts", "keywords", "context"],
+          includeScore: true,
+        });
 
-    db.collection("intents").get().then(snapshot => {
-      intentsCache = snapshot.docs.map(doc => doc.data());
-    });
-
-    function getIntentResponse(userInput) {
-      if (!userInput.trim()) {
-        return "Please enter something!";
-      }
-
-      const fuse = new Fuse(intentsCache, fuseOptions);
-      const results = fuse.search(userInput);
-
-      if (results.length > 0 && results[0].score < 0.5) {
-        lastMatchedIntent = results[0].item;
-
-        // If there's no context yet, return the main answer
-        if (!lastMatchedIntent.context || !Array.isArray(lastMatchedIntent.context)) {
-          return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
+        // Search for the best match based on input
+        const results = fuse.search(inputText);
+        if (results.length > 0) {
+          lastMatchedIntent = results[0].item;
+          return lastMatchedIntent;
         }
 
-        // Check context values in the user input
-        for (let i = 0; i < lastMatchedIntent.context.length; i++) {
-          if (userInput.includes(lastMatchedIntent.context[i])) {
-            return lastMatchedIntent.contextAnswers[i] || "Sorry, I couldn't find a suitable follow-up answer.";
-          }
-        }
-
-        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
-      } else {
-        return "Sorry, I couldn't understand your question.";
-      }
+        return null;
+      });
     }
 
     function sendMessage() {
-      const userInput = document.getElementById("userInput").value;
+      const userInput = document.getElementById("userInput").value.trim();
+      if (userInput === "") return;
+
       addMessage(userInput, "user");
-      const botResponse = getIntentResponse(userInput);
-      addMessage(botResponse, "bot", true);
       document.getElementById("userInput").value = "";
+
+      getBestMatchResponse(userInput).then(intent => {
+        if (intent) {
+          const contextResponse = lastMatchedIntent.context ? lastMatchedIntent.contextAnswers : [];
+          addMessage(lastMatchedIntent.answers, "bot");
+
+        } else {
+          addMessage("Sorry, I didn't understand that.", "bot");
+        }
+      });
     }
+
   </script>
+
 </body>
 </html>
