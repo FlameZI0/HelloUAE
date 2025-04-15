@@ -293,6 +293,8 @@
       });
     }
 
+    let lastIntent = null;
+
     function sendMessage() {
       const userInput = document.getElementById("userInput").value.trim();
       if (userInput === "") return;
@@ -302,27 +304,41 @@
     
       getBestMatchResponse(userInput).then(intent => {
         if (intent) {
-          lastMatchedIntent = intent;
+          // Store this for future context
+          lastIntent = intent;
     
-          // If this is a follow-up message and context exists
-          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
-            lastIntent = lastMatchedIntent; // Save it!
-            const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
+          const hasContext = intent.context && intent.contextAnswers;
     
-            // If index found in context, reply with corresponding contextAnswer
-            if (contextIndex !== -1 && contextIndex < lastMatchedIntent.contextAnswers.length) {
-              addMessage(lastMatchedIntent.contextAnswers[contextIndex], "bot");
+          if (hasContext && lastIntent.context.length > 0) {
+            const contextIndex = lastIntent.context.findIndex(ctx =>
+              userInput.toLowerCase().includes(ctx.toLowerCase())
+            );
+    
+            if (contextIndex !== -1 && contextIndex < lastIntent.contextAnswers.length) {
+              addMessage(lastIntent.contextAnswers[contextIndex], "bot");
             } else {
-              // Fallback to a random normal answer if context didn't match properly
-              const fallback = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+              // No context match, use fallback
+              const fallback = intent.answers[Math.floor(Math.random() * intent.answers.length)];
               addMessage(fallback, "bot");
             }
-    
           } else {
-            // No context expected, so pick a regular answer
-            const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-            lastIntent = lastMatchedIntent; // Save it!
+            // No context needed, regular answer
+            const answer = intent.answers[Math.floor(Math.random() * intent.answers.length)];
             addMessage(answer, "bot");
+          }
+    
+        } else if (lastIntent) {
+          // Try matching context from last intent
+          const contextIndex = lastIntent.context.findIndex(ctx =>
+            userInput.toLowerCase().includes(ctx.toLowerCase())
+          );
+    
+          if (contextIndex !== -1 && contextIndex < lastIntent.contextAnswers.length) {
+            addMessage(lastIntent.contextAnswers[contextIndex], "bot");
+            // Clear lastIntent after using it to avoid leaking
+            lastIntent = null;
+          } else {
+            addMessage("Sorry, I didn't understand that.", "bot");
           }
     
         } else {
