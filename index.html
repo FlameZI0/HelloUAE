@@ -316,7 +316,7 @@
         if (match && data.search) {
           console.log("Matched map prompt:", match);
       
-          const iframeHTML = 
+          const iframeHTML = `
             <iframe
               width="100%"
               height="400"
@@ -326,7 +326,7 @@
               referrerpolicy="no-referrer-when-downgrade"
               src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
             </iframe>
-          ;
+          `;
 
       
           mapResults.push({
