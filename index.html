@@ -316,7 +316,7 @@
         if (match && data.search) {
           console.log("Matched map prompt:", match);
       
-          const iframeHTML = 
+          const iframeHTML = `
             <iframe
               width="100%"
               height="400"
@@ -324,8 +324,10 @@
               loading="lazy"
               allowfullscreen
               referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${data.search}">
-            </iframe>;
+              src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
+            </iframe>
+          `;
+
       
           mapResults.push({
             answer: data.answers[Math.floor(Math.random() * data.answers.length)],
