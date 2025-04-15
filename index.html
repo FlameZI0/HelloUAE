@@ -198,7 +198,6 @@
 
   <!-- Inside your <script> tag -->
   <script>
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
       authDomain: "bott-60537.firebaseapp.com",
@@ -363,7 +362,7 @@
       // Default response if no match
       console.log("No map/intent/context matched. Using fallback.");
       await addMessage("I don't have a response for that yet.", "bot");
-   }
+    } // This was the missing closing bracket!
   </script>
 </body>
 </html>
