@@ -271,41 +271,40 @@
     };
 
     async function sendMessage() {
-      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"");
+      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "");
       const text = input.toLowerCase();
       if (!text) return;
-
+    
       addMessage(text, "user");
-      input.value = "";
-
+      document.getElementById("userInput").value = "";
+    
       console.log("User input:", text);
-
+    
       const [intentSnap, mapSnap] = await Promise.all([
         db.collection("intents").get(),
         db.collection("mapdata").get()
       ]);
-
+    
       const intents = intentSnap.docs.map(doc => doc.data());
       const maps = mapSnap.docs.map(doc => doc.data());
       intents.sort((a, b) => a.priority - b.priority);
-
+    
       console.log("Fetched intents:", intents.length);
       console.log("Fetched map entries:", maps.length);
-
+    
       const mapTriggers = ["location of", "where is", "near me", "nearby"];
       const mapTriggerUsed = mapTriggers.find(trigger => text.includes(trigger));
-      const mapTriggerCount = mapTriggerUsed ? text.split(mapTriggerUsed).length - 1 : 0;
-
-      if (mapTriggerUsed && mapTriggerCount === 1) {
+    
+      if (mapTriggerUsed) {
         console.log("Checking mapdata first...");
         const mapResults = [];
-
+    
         for (const data of maps) {
           const prompts = data.prompts.map(p => p.toLowerCase());
           const match = prompts.find(p => text.includes(p));
           if (match && data.search) {
             console.log("Matched map prompt:", match);
-
+    
             const iframeHTML = 
               `<iframe
                 width="100%"
@@ -316,14 +315,14 @@
                 referrerpolicy="no-referrer-when-downgrade"
                 src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
               </iframe>`;
-
+    
             mapResults.push({
               answer: data.answers[Math.floor(Math.random() * data.answers.length)],
               iframe: iframeHTML
             });
           }
         }
-
+    
         if (mapResults.length > 0) {
           for (const res of mapResults) {
             await botRespond(res.answer + "<br>" + res.iframe, true);
@@ -333,13 +332,13 @@
           console.log("No map matches found.");
         }
       }
-
+    
       // 2. CHECK INTENTS with Fuse.js fuzzy matching
       const fuse = new Fuse(intents, fuseOptions);
       const result = fuse.search(text); // Perform fuzzy search
-
+    
       const matchedIntents = result.map(item => item.item); // Extract matched intents
-
+    
       if (matchedIntents.length > 0) {
         for (const intent of matchedIntents) {
           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
@@ -349,14 +348,14 @@
         }
         return; // exit after intent response
       }
-
+    
       // Check for context response
       if (lastMatchedIntent && Array.isArray(lastMatchedIntent.context) && Array.isArray(lastMatchedIntent.contextAnswers)) {
         const lowerText = text.toLowerCase();
-
+    
         for (let i = 0; i < lastMatchedIntent.context.length; i++) {
           const contextItem = lastMatchedIntent.context[i].toLowerCase();
-
+    
           if (lowerText.includes(contextItem)) {
             const contextResponse = lastMatchedIntent.contextAnswers[i];
             if (contextResponse) {
@@ -366,18 +365,13 @@
           }
         }
       }
-
-
+    
       // DEFAULT RESPONSE (same as before)
       console.log("No map/intent/context matched. Using fallback.");
       await botRespond("I don't have a response for that yet.");
-
+    
       // 4. Store Unknown Prompt in Firebase (same as before)
       // (storing unknown prompt code remains unchanged)
-    }
-
-    async function botRespond(message) {
-      addMessage(message, "bot");
     }
   </script>
 </body>
