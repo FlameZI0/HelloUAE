@@ -265,107 +265,38 @@
 
     const fuseOptions = {
       includeScore: true,
-      threshold: 0.1, // The threshold value (lower = more strict, higher = more lenient)
-      keys: ["keywords", "prompts"], // Search in the keywords and prompts
+      keys: ["prompts", "keywords"]
     };
 
-    async function sendMessage() {
-      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
-      const text = input.toLowerCase();
-      if (!text) return;
-    
-      addMessage(text, "user");
-      document.getElementById("userInput").value = "";
-    
-      console.log("User input:", text);
-    
-      // Fetch intents and mapdata collections
-      const [intentSnap, mapSnap] = await Promise.all([
-        db.collection("intents").get(),
-        db.collection("mapdata").get()
-      ]);
-    
-      const intents = intentSnap.docs.map(doc => doc.data());
-      const maps = mapSnap.docs.map(doc => doc.data());
-    
-      console.log("Fetched intents:", intents.length);
-      console.log("Fetched mapdata entries:", maps.length); // This will show if mapdata is being fetched properly.
-    
-      // Check if mapdata collection is empty
-      if (maps.length === 0) {
-        console.log("No mapdata found.");
-      }
-    
-      // Proceed with map checking logic if mapdata exists
-      const mapTriggers = ["location of", "where is", "near me", "nearby", "nearest"];
-      const mapTriggerUsed = mapTriggers.find(trigger => text.includes(trigger));
-    
-      if (mapTriggerUsed) {
-        console.log("Checking mapdata first...");
-        const mapResults = [];
-    
-        for (const data of maps) {
-        console.log(data);  // Log the entire mapdata entry
-        if (!data.prompts || !data.answers || !data.search) {
-          console.log("Missing necessary map data:", data);
-          continue;  // Skip this entry if it's incomplete
-        }
-      
-        const prompts = data.prompts.map(p => p.toLowerCase());
-        const match = prompts.find(p => text.includes(p));
-        if (match && data.search) {
-          console.log("Matched map prompt:", match);
-      
-          const iframeHTML = `
-            <iframe
-              width="100%"
-              height="400"
-              style="border:0; margin-top: 10px;"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
-            </iframe>
-          `;
+    let intentsCache = [];
 
-      
-          mapResults.push({
-            answer: data.answers[Math.floor(Math.random() * data.answers.length)],
-            iframe: iframeHTML
-          });
-        }
+    db.collection("intents").get().then(snapshot => {
+      intentsCache = snapshot.docs.map(doc => doc.data());
+    });
+
+    function getIntentResponse(userInput) {
+      if (!userInput.trim()) {
+        return "Please enter something!";
       }
-      
-      if (mapResults.length > 0) {
-        for (const res of mapResults) {
-          await addMessage(res.answer + "<br>" + res.iframe, "bot");
-        }
-        return;  // Exit after map response
-      } else {
-        console.log("No map matches found.");
+
+      const fuse = new Fuse(intentsCache, fuseOptions);
+      const results = fuse.search(userInput);
+
+      if (results.length > 0 && results[0].score < 0.5) {
+        lastMatchedIntent = results[0].item;
+        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
       }
-    
-      // Check intents if no mapdata matched
-      const fuse = new Fuse(intents, fuseOptions);
-      const result = fuse.search(text);
-    
-      const matchedIntents = result.map(item => item.item);
-    
-      if (matchedIntents.length > 0) {
-        for (const intent of matchedIntents) {
-          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
-          console.log("Responding with intent answer:", response);
-          await addMessage(response, "bot");
-          lastMatchedIntent = intent;
-        }
-        return;
-      }
-    
-    // Default response if no match
-      console.log("No map/intent/context matched. Using fallback.");
-      await addMessage("I don't have a response for that yet.", "bot");
-    } // <-- This is the missing closing bracket!
-    console.log("Done!");
+
+      return "Sorry, I couldn't understand that.";
+    }
+
+    function sendMessage() {
+      const userInput = document.getElementById("userInput").value;
+      addMessage(userInput, "user");
+      const response = getIntentResponse(userInput);
+      addMessage(response, "bot", true);
+      document.getElementById("userInput").value = "";
+    }
   </script>
 </body>
 </html>
