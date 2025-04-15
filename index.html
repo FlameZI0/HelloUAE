@@ -266,35 +266,54 @@
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    let lastIntent = null; // Keeps track of last matched intent
+    let context = null;    // Optional: track current context word
+    
     async function getBestMatchResponse(userMessage) {
       const snapshot = await db.collection("intents").get();
       const intents = snapshot.docs.map(doc => doc.data());
-      const fuse = new Fuse(intents, { keys: ["prompts", "keywords"] });
+      const fuse = new Fuse(intents, { keys: ["prompts", "keywords"], threshold: 0.3 });
+    
       const result = fuse.search(userMessage);
+      console.log("Fuse search result:", result);
     
       if (result.length > 0) {
         const matchedIntent = result[0].item;
+        lastIntent = matchedIntent; // Store last intent
     
-        // Handle context and contextAnswers if present
-        if (
-          Array.isArray(matchedIntent.context) &&
-          Array.isArray(matchedIntent.contextAnswers) &&
-          matchedIntent.context.length === matchedIntent.contextAnswers.length
-        ) {
-          const contextIndex = matchedIntent.context.findIndex(ctx =>
-            ctx.toLowerCase() === userMessage.toLowerCase()
-          );
+        // Handle context-based response
+        if (matchedIntent.context && matchedIntent.contextAnswers) {
+          context = matchedIntent.context;
+          console.log("Context set to:", context);
     
-          if (contextIndex !== -1) {
-            context = matchedIntent.context[contextIndex];
-            return matchedIntent.contextAnswers[contextIndex];
+          // Return randomized answer if available
+          if (matchedIntent.answers && matchedIntent.answers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * matchedIntent.answers.length);
+            console.log("Answer chosen:", matchedIntent.answers[randomIndex]);
+            return matchedIntent.answers[randomIndex];
           }
+    
+          return "I understood that, but I have no specific answer.";
         }
     
-        // Otherwise, return a random normal answer
-        if (Array.isArray(matchedIntent.answers) && matchedIntent.answers.length > 0) {
+        // If no context, just return a randomized answer
+        if (matchedIntent.answers && matchedIntent.answers.length > 0) {
           const randomIndex = Math.floor(Math.random() * matchedIntent.answers.length);
+          console.log("Answer chosen:", matchedIntent.answers[randomIndex]);
           return matchedIntent.answers[randomIndex];
+        }
+    
+        return "I understood that, but I have no specific answer.";
+      }
+    
+      // If nothing matched directly, try context matching
+      if (lastIntent && lastIntent.context && lastIntent.contextAnswers) {
+        const contextIndex = lastIntent.context.indexOf(userMessage.toLowerCase());
+        console.log("Context index:", contextIndex);
+    
+        if (contextIndex !== -1 && lastIntent.contextAnswers[contextIndex]) {
+          console.log("Context-based answer:", lastIntent.contextAnswers[contextIndex]);
+          return lastIntent.contextAnswers[contextIndex];
         }
       }
     
