@@ -6,157 +6,159 @@
   <title>DuneAI</title>
   <style>
     body {
-        font-family: Arial, sans-serif;
-        background-color: #343541;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-        justify-content: center;
-        color: white;
+      font-family: Arial, sans-serif;
+      background-color: #343541;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: center;
+      color: white;
     }
     #auth-bar {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        justify-content: space-between;
-        width: auto;
-        padding: 10px 15px;
-        background: #2c2d3a;
-        border-radius: 8px;
-        align-items: center;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
     }
     #login-btn, #logout-btn {
-        background: #0078ff;
-        padding: 10px 15px;
-        border-radius: 25px;
-        color: white;
-        cursor: pointer;
+      background: #0078ff;
+      padding: 10px 15px;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
     }
     .chat-container {
-        width: 100%;
-        max-width: 600px;
-        height: 85vh;
-        background: #40414f;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+      width: 100%;
+      max-width: 600px;
+      height: 85vh;
+      background: #40414f;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     #chat-box {
-        flex-grow: 1;
-        padding: 15px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: #26262f;
-        scrollbar-width: none;
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #26262f;
+      scrollbar-width: none;
     }
     .message {
-        max-width: 75%;
-        padding: 12px;
-        border-radius: 12px;
-        word-wrap: break-word;
-        font-size: 16px;
-        line-height: 1.5;
+      max-width: 75%;
+      padding: 12px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      font-size: 16px;
+      line-height: 1.5;
     }
     .message-user {
-        align-self: flex-end;
-        background: #0078ff;
-        color: white;
+      align-self: flex-end;
+      background: #0078ff;
+      color: white;
     }
     .message-bot {
-        align-self: flex-start;
-        background: #444654;
-        color: white;
+      align-self: flex-start;
+      background: #444654;
+      color: white;
     }
     .input-container {
-        display: flex;
-        padding: 15px;
-        background: #40414f;
-        border-top: 1px solid #565869;
+      display: flex;
+      padding: 15px;
+      background: #40414f;
+      border-top: 1px solid #565869;
     }
     input[type="text"] {
-        flex-grow: 1;
-        padding: 12px;
-        border: none;
-        border-radius: 25px;
-        outline: none;
-        font-size: 16px;
-        background: #565869;
-        color: white;
+      flex-grow: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      font-size: 16px;
+      background: #565869;
+      color: white;
     }
     button {
-        margin-left: 10px;
-        padding: 12px 15px;
-        border: none;
-        border-radius: 25px;
-        background: #0078ff;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
+      margin-left: 10px;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 25px;
+      background: #0078ff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
     }
     img {
-        width: 100px;
+      width: 100px;
     }
     #logo {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        display: flex;
-        justify-content: space-between;
-        width: auto;
-        padding: 10px 15px;
-        background: #2c2d3a;
-        border-radius: 8px;
-        align-items: center;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
     }
     #help {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        text-decoration: none;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50; /* green background */
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     #help:hover {
-        background-color: #45a049;
+      background-color: #45a049; /* darker green on hover */
     }
     #signins {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        justify-content: space-between;
-        width: auto;
-        padding: 10px 15px;
-        background: #2c2d3a;
-        border-radius: 8px;
-        align-items: center;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
     }
     #google-signin {
-        background-color: #fbbc05;
-        padding: 10px 20px;
-        border-radius: 25px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
+      background-color: #fbbc05; /* Google yellow */
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
     }
+
     #anonymous-signin {
-        background-color: #6c757d;
-        padding: 10px 20px;
-        border-radius: 25px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
+      background-color: #6c757d; /* Neutral gray for anonymous sign-in */
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -169,12 +171,10 @@
     </div>
     <button id="logout-btn" onclick="logout()">Logout</button>
   </div>
-  
   <div id="signins">
     <button id="google-signin">Sign in with Google</button>
     <button id="anonymous-signin">Continue without signing in</button>
   </div>
-
   <div id="logo">
     <a href="https://flamezi0.github.io/HelloUAE/help.html" id="help">Suggest intents</a>
     <img src="https://flamezi0.github.io/HelloUAE/Image20250415163721.png" alt="Logo">
@@ -196,6 +196,7 @@
   <!-- Fuse.js -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 
+  <!-- Inside your <script> tag -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
@@ -215,6 +216,7 @@
     let currentUser = null;
 
     auth.onAuthStateChanged(user => {
+      console.log("Auth state changed:", user);
       if (user) {
         currentUser = user;
         document.getElementById("google-signin").style.display = "none";
@@ -252,80 +254,118 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender) {
-      if (typeof message !== "string") {
-        message = JSON.stringify(message);
-      }
-
+    function addMessage(message, sender, isHTML = false) {
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
       messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
-      messageElement.innerHTML = message.replace(/\n/g, "<br>");
+      messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-    
-    async function getBestMatchResponse(userMessage) {
-      const snapshot = await db.collection("intents").get();
-      const intents = snapshot.docs.map(doc => doc.data());
-      const fuse = new Fuse(intents, { keys: ["prompts", "keywords"], threshold: 0.3 });
-    
-      const result = fuse.search(userMessage);
-      console.log("Fuse search result:", result);
-    
-      if (result.length > 0) {
-        const matchedIntent = result[0].item;
-        lastIntent = matchedIntent; // Store last intent
-    
-        // Handle context-based response
-        if (matchedIntent.context && matchedIntent.contextAnswers) {
-          context = matchedIntent.context;
-          console.log("Context set to:", context);
-    
-          // Return randomized answer if available
-          if (matchedIntent.answers && matchedIntent.answers.length > 0) {
-            const randomIndex = Math.floor(Math.random() * matchedIntent.answers.length);
-            console.log("Answer chosen:", matchedIntent.answers[randomIndex]);
-            return matchedIntent.answers[randomIndex];
-          }
-    
-          return "I understood that, but I have no specific answer.";
-        }
-    
-        // If no context, just return a randomized answer
-        if (matchedIntent.answers && matchedIntent.answers.length > 0) {
-          const randomIndex = Math.floor(Math.random() * matchedIntent.answers.length);
-          console.log("Answer chosen:", matchedIntent.answers[randomIndex]);
-          return matchedIntent.answers[randomIndex];
-        }
-    
-        return "I understood that, but I have no specific answer.";
-      }
-    
-      // If nothing matched directly, try context matching
-      if (lastIntent && lastIntent.context && lastIntent.contextAnswers) {
-        const contextIndex = lastIntent.context.indexOf(userMessage.toLowerCase());
-        console.log("Context index:", contextIndex);
-    
-        if (contextIndex !== -1 && lastIntent.contextAnswers[contextIndex]) {
-          console.log("Context-based answer:", lastIntent.contextAnswers[contextIndex]);
-          return lastIntent.contextAnswers[contextIndex];
-        }
-      }
-    
-      return "Sorry, I didn't understand that.";
-    }
-    
+
+    const fuseOptions = {
+      includeScore: true,
+      threshold: 0.1, // The threshold value (lower = more strict, higher = more lenient)
+      keys: ["keywords", "prompts"], // Search in the keywords and prompts
+    };
+
     async function sendMessage() {
-      const userMessage = document.getElementById("userInput").value.trim();
-      if (!userMessage) return;
-
-      addMessage(userMessage, "user");
+      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
+      const text = input.toLowerCase();
+      if (!text) return;
+    
+      addMessage(text, "user");
       document.getElementById("userInput").value = "";
+    
+      console.log("User input:", text);
+    
+      // Fetch intents and mapdata collections
+      const [intentSnap, mapSnap] = await Promise.all([
+        db.collection("intents").get(),
+        db.collection("mapdata").get()
+      ]);
+    
+      const intents = intentSnap.docs.map(doc => doc.data());
+      const maps = mapSnap.docs.map(doc => doc.data());
+    
+      console.log("Fetched intents:", intents.length);
+      console.log("Fetched mapdata entries:", maps.length); // This will show if mapdata is being fetched properly.
+    
+      // Check if mapdata collection is empty
+      if (maps.length === 0) {
+        console.log("No mapdata found.");
+      }
+    
+      // Proceed with map checking logic if mapdata exists
+      const mapTriggers = ["location of", "where is", "near me", "nearby", "nearest"];
+      const mapTriggerUsed = mapTriggers.find(trigger => text.includes(trigger));
+    
+      if (mapTriggerUsed) {
+        console.log("Checking mapdata first...");
+        const mapResults = [];
+    
+        for (const data of maps) {
+        console.log(data);  // Log the entire mapdata entry
+        if (!data.prompts || !data.answers || !data.search) {
+          console.log("Missing necessary map data:", data);
+          continue;  // Skip this entry if it's incomplete
+        }
+      
+        const prompts = data.prompts.map(p => p.toLowerCase());
+        const match = prompts.find(p => text.includes(p));
+        if (match && data.search) {
+          console.log("Matched map prompt:", match);
+      
+          const iframeHTML = 
+            <iframe
+              width="100%"
+              height="400"
+              style="border:0; margin-top: 10px;"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
+            </iframe>
+          ;
 
-      const response = await getBestMatchResponse(userMessage);
-      addMessage(response, "bot");
-    }
+      
+          mapResults.push({
+            answer: data.answers[Math.floor(Math.random() * data.answers.length)],
+            iframe: iframeHTML
+          });
+        }
+      }
+      
+      if (mapResults.length > 0) {
+        for (const res of mapResults) {
+          await addMessage(res.answer + "<br>" + res.iframe, "bot");
+        }
+        return;  // Exit after map response
+      } else {
+        console.log("No map matches found.");
+      }
+    
+      // Check intents if no mapdata matched
+      const fuse = new Fuse(intents, fuseOptions);
+      const result = fuse.search(text);
+    
+      const matchedIntents = result.map(item => item.item);
+    
+      if (matchedIntents.length > 0) {
+        for (const intent of matchedIntents) {
+          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
+          console.log("Responding with intent answer:", response);
+          await addMessage(response, "bot");
+          lastMatchedIntent = intent;
+        }
+        return;
+      }
+    
+    // Default response if no match
+      console.log("No map/intent/context matched. Using fallback.");
+      await addMessage("I don't have a response for that yet.", "bot");
+    } // <-- This is the missing closing bracket!
+    console.log("Done!");
   </script>
 </body>
 </html>
