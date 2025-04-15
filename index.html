@@ -330,25 +330,27 @@
         if (results.length > 0 && results[0].score < 0.5) {
           lastMatchedIntent = results[0].item;
     
-          let response = "";
-    
-          // Check if the intent has context-based answers
-          if (lastMatchedIntent.context) {
+          // 1. Context check
+          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers) {
             for (let i = 0; i < lastMatchedIntent.context.length; i++) {
               if (userInput.includes(lastMatchedIntent.context[i])) {
-                response = lastMatchedIntent.contextAnswers[i] || "Sorry, I couldn't find a suitable follow-up answer.";
-                break; // Exit once we find a match for context
+                const ctxAnswer = lastMatchedIntent.contextAnswers[i];
+                if (Array.isArray(ctxAnswer)) {
+                  // If context answer is an array, pick one randomly
+                  const randomIndex = Math.floor(Math.random() * ctxAnswer.length);
+                  return ctxAnswer[randomIndex];
+                } else {
+                  return ctxAnswer; // Plain string
+                }
               }
             }
           }
     
-          // If no context-based response, use a random answer from the intent's answers
-          if (!response && lastMatchedIntent.answers && lastMatchedIntent.answers.length > 0) {
+          // 2. No context match? Pick from regular answers randomly
+          if (Array.isArray(lastMatchedIntent.answers) && lastMatchedIntent.answers.length > 0) {
             const randomIndex = Math.floor(Math.random() * lastMatchedIntent.answers.length);
-            response = lastMatchedIntent.answers[randomIndex];
+            return lastMatchedIntent.answers[randomIndex];
           }
-    
-          return response || "Sorry, I couldn't find a suitable answer.";
         }
     
         return "Sorry, I couldn't find a suitable answer.";
