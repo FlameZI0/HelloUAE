@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DuneAI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #343541;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: center;
+      color: white;
+    }
+    #auth-bar {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
+    }
+    #login-btn, #logout-btn {
+      background: #0078ff;
+      padding: 10px 15px;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+    }
+    .chat-container {
+      width: 100%;
+      max-width: 600px;
+      height: 85vh;
+      background: #40414f;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #chat-box {
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #26262f;
+      scrollbar-width: none;
+    }
+    .message {
+      max-width: 75%;
+      padding: 12px;
+      border-radius: 12px;
+      word-wrap: break-word;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .message-user {
+      align-self: flex-end;
+      background: #0078ff;
+      color: white;
+    }
+    .message-bot {
+      align-self: flex-start;
+      background: #444654;
+      color: white;
+    }
+    .input-container {
+      display: flex;
+      padding: 15px;
+      background: #40414f;
+      border-top: 1px solid #565869;
+    }
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      font-size: 16px;
+      background: #565869;
+      color: white;
+    }
+    button {
+      margin-left: 10px;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 25px;
+      background: #0078ff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    img {
+      width: 100px;
+    }
+    #logo {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
+    }
+    #help {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50; /* green background */
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #help:hover {
+      background-color: #45a049; /* darker green on hover */
+    }
+    #signins {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      padding: 10px 15px;
+      background: #2c2d3a;
+      border-radius: 8px;
+      align-items: center;
+    }
+    #google-signin {
+      background-color: #fbbc05; /* Google yellow */
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #anonymous-signin {
+      background-color: #6c757d; /* Neutral gray for anonymous sign-in */
+      padding: 10px 20px;
+      border-radius: 25px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="auth-bar" style="display:none;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img id="user-pfp" src="" alt="PFP" style="width: 32px; height: 32px; border-radius: 50%;">
+      <p id="username">Logged in as:</p>
+    </div>
+    <button id="logout-btn" onclick="logout()">Logout</button>
+  </div>
+  <div id="signins">
+    <button id="google-signin">Sign in with Google</button>
+    <button id="anonymous-signin">Continue without signing in</button>
+  </div>
+  <div id="logo">
+    <a href="https://hellouae.w3spaces.com/help.html" id="help">Suggest intents</a>
+    <img src="./logo2.png" alt="Logo">
+  </div>
+
+  <div class="chat-container" id="chatContainer" style="display:none;">
+    <div id="chat-box"></div>
+    <div class="input-container">
+      <input type="text" id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+  <!-- Fuse.js -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+
+  <!-- Inside your <script> tag -->
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
+      authDomain: "bott-60537.firebaseapp.com",
+      projectId: "bott-60537",
+      storageBucket: "bott-60537.appspot.com",
+      messagingSenderId: "155707196801",
+      appId: "1:155707196801:web:1b2c1d287b77bc9662d480",
+      measurementId: "G-B0SQBQLD0E"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let lastMatchedIntent = null;
+    let currentUser = null;
+
+    auth.onAuthStateChanged(user => {
+      console.log("Auth state changed:", user);
+      if (user) {
+        currentUser = user;
+        document.getElementById("google-signin").style.display = "none";
+        document.getElementById("anonymous-signin").style.display = "none";
+        document.getElementById("auth-bar").style.display = "flex";
+        document.getElementById("chatContainer").style.display = "flex";
+
+        const username = user.isAnonymous ? "Anonymous User" : (user.displayName || user.email);
+        document.getElementById("username").textContent = "Logged in as: " + username;
+        document.getElementById("user-pfp").src = user.photoURL || "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png";
+      } else {
+        currentUser = null;
+        document.getElementById("google-signin").style.display = "inline-block";
+        document.getElementById("anonymous-signin").style.display = "inline-block";
+        document.getElementById("auth-bar").style.display = "none";
+        document.getElementById("chatContainer").style.display = "none";
+      }
+    });
+
+    document.getElementById("google-signin").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(error => {
+        console.error("Google sign-in error:", error.message);
+      });
+    });
+
+    document.getElementById("anonymous-signin").addEventListener("click", () => {
+      auth.signInAnonymously().catch(error => {
+        console.error("Anonymous sign-in error:", error.message);
+      });
+    });
+
+    function logout() {
+      console.log("Logging out user:", currentUser?.uid);
+      auth.signOut();
+    }
+
+    function addMessage(message, sender, isHTML = false) {
+      const chatBox = document.getElementById("chat-box");
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
+      messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    const fuseOptions = {
+      includeScore: true,
+      threshold: 0.3, // The threshold value (lower = more strict, higher = more lenient)
+      keys: ["keywords", "prompts"], // Search in the keywords and prompts
+    };
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim().toLowerCase();
+      if (!text) return;
+
+      addMessage(text, "user");
+      input.value = "";
+
+      console.log("User input:", text);
+
+      const [intentSnap, mapSnap] = await Promise.all([
+        db.collection("intents").get(),
+        db.collection("mapdata").get()
+      ]);
+
+      const intents = intentSnap.docs.map(doc => doc.data());
+      const maps = mapSnap.docs.map(doc => doc.data());
+      intents.sort((a, b) => a.priority - b.priority);
+
+      console.log("Fetched intents:", intents.length);
+      console.log("Fetched map entries:", maps.length);
+
+      const mapTriggers = ["location of", "where is", "near me", "nearby"];
+      const mapTriggerUsed = mapTriggers.find(trigger => text.includes(trigger));
+      const mapTriggerCount = mapTriggerUsed ? text.split(mapTriggerUsed).length - 1 : 0;
+
+      if (mapTriggerUsed && mapTriggerCount === 1) {
+        console.log("Checking mapdata first...");
+        const mapResults = [];
+
+        for (const data of maps) {
+          const prompts = data.prompts.map(p => p.toLowerCase());
+          const match = prompts.find(p => text.includes(p));
+          if (match && data.search) {
+            console.log("Matched map prompt:", match);
+
+            const iframeHTML = 
+              `<iframe
+                width="100%"
+                height="400"
+                style="border:0; margin-top: 10px;"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
+              </iframe>`;
+
+            mapResults.push({
+              answer: data.answers[Math.floor(Math.random() * data.answers.length)],
+              iframe: iframeHTML
+            });
+          }
+        }
+
+        if (mapResults.length > 0) {
+          for (const res of mapResults) {
+            await botRespond(res.answer + "<br>" + res.iframe, true);
+          }
+          return; // exit after map response
+        } else {
+          console.log("No map matches found.");
+        }
+      }
+
+      // 2. CHECK INTENTS with Fuse.js fuzzy matching
+      const fuse = new Fuse(intents, fuseOptions);
+      const result = fuse.search(text); // Perform fuzzy search
+
+      const matchedIntents = result.map(item => item.item); // Extract matched intents
+
+      if (matchedIntents.length > 0) {
+        for (const intent of matchedIntents) {
+          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
+          console.log("Responding with intent answer:", response);
+          await botRespond(response);
+          lastMatchedIntent = intent;
+        }
+        return; // exit after intent response
+      }
+
+      // Check for context response
+      if (lastMatchedIntent && Array.isArray(lastMatchedIntent.context) && Array.isArray(lastMatchedIntent.contextAnswers)) {
+        const lowerText = text.toLowerCase();
+
+        for (let i = 0; i < lastMatchedIntent.context.length; i++) {
+          const contextItem = lastMatchedIntent.context[i].toLowerCase();
+
+          if (lowerText.includes(contextItem)) {
+            const contextResponse = lastMatchedIntent.contextAnswers[i];
+            if (contextResponse) {
+              await botRespond(contextResponse);
+              return; // stop here so it doesn't send the normal answer
+            }
+          }
+        }
+      }
+
+
+      // DEFAULT RESPONSE (same as before)
+      console.log("No map/intent/context matched. Using fallback.");
+      await botRespond("I don't have a response for that yet.");
+
+      // 4. Store Unknown Prompt in Firebase (same as before)
+      // (storing unknown prompt code remains unchanged)
+    }
+
+    async function botRespond(message) {
+      addMessage(message, "bot");
+    }
+  </script>
+</body>
+</html>
