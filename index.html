@@ -279,6 +279,7 @@
         const fuse = new Fuse(intents, {
           keys: ["prompts", "keywords", "context"],
           includeScore: true,
+          threshold: 0.1, // stricter match
         });
 
         // Search for the best match based on input
