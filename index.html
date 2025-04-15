@@ -295,21 +295,39 @@
     function sendMessage() {
       const userInput = document.getElementById("userInput").value.trim();
       if (userInput === "") return;
-
+    
       addMessage(userInput, "user");
       document.getElementById("userInput").value = "";
-
+    
       getBestMatchResponse(userInput).then(intent => {
         if (intent) {
-          const contextResponse = lastMatchedIntent.context ? lastMatchedIntent.contextAnswers : [];
-          addMessage(lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)], "bot");
-
+          lastMatchedIntent = intent;
+    
+          // If this is a follow-up message and context exists
+          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
+            // Find index of this follow-up input in the context array
+            const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
+    
+            // If index found in context, reply with corresponding contextAnswer
+            if (contextIndex !== -1 && contextIndex < lastMatchedIntent.contextAnswers.length) {
+              addMessage(lastMatchedIntent.contextAnswers[contextIndex], "bot");
+            } else {
+              // Fallback to a random normal answer if context didn't match properly
+              const fallback = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+              addMessage(fallback, "bot");
+            }
+    
+          } else {
+            // No context expected, so pick a regular answer
+            const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+            addMessage(answer, "bot");
+          }
+    
         } else {
           addMessage("Sorry, I didn't understand that.", "bot");
         }
       });
     }
-
   </script>
 
 </body>
