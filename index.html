@@ -304,53 +304,40 @@
     function sendMessage() {
       const userInput = document.getElementById("userInput").value.trim();
       if (userInput === "") return;
-    
-      // Log user input
-      console.log("User Input:", userInput);
-    
+  
       addMessage(userInput, "user");
       document.getElementById("userInput").value = "";
-    
+  
       getBestMatchResponse(userInput).then(intent => {
-        if (intent) {
-          // Log the matched intent
-          console.log("Matched Intent:", intent);
-          
-          lastMatchedIntent = intent; // Save the matched intent as the last matched intent
-    
-          // If this is a follow-up message and context exists in the last matched intent
-          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
-            console.log("Context exists, checking context...");
-            const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
-    
-            // Log the context check result
-            console.log("Context Index Found:", contextIndex);
-    
-            // If context match found, reply with corresponding contextAnswer
-            if (contextIndex !== -1 && contextIndex < lastMatchedIntent.contextAnswers.length) {
-              const contextAnswer = lastMatchedIntent.contextAnswers[contextIndex];
-              console.log("Context Answer:", contextAnswer);
-              addMessage(contextAnswer, "bot");
-            } else {
-              // Fallback to a random normal answer if context didn't match properly
-              const fallback = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-              console.log("Fallback Answer:", fallback);
-              addMessage(fallback, "bot");
-            }
-    
+          if (intent) {
+              lastMatchedIntent = intent; // This will just update the existing variable, no redeclaration
+  
+              // If this is a follow-up message and context exists
+              if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
+                  lastIntent = matchedIntent; // Save it!
+                  const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
+  
+                  // If index found in context, reply with corresponding contextAnswer
+                  if (contextIndex !== -1 && contextIndex < lastMatchedIntent.contextAnswers.length) {
+                      addMessage(lastMatchedIntent.contextAnswers[contextIndex], "bot");
+                  } else {
+                      // Fallback to a random normal answer if context didn't match properly
+                      const fallback = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+                      addMessage(fallback, "bot");
+                  }
+  
+              } else {
+                  // No context expected, so pick a regular answer
+                  const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+                  lastIntent = matchedIntent; // Save it!
+                  addMessage(answer, "bot");
+              }
+  
           } else {
-            // No context expected, so pick a regular answer
-            const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-            console.log("Regular Answer:", answer);
-            addMessage(answer, "bot");
+              addMessage("Sorry, I didn't understand that.", "bot");
           }
-    
-        } else {
-          console.log("No matching intent found.");
-          addMessage("Sorry, I didn't understand that.", "bot");
-        }
       });
-    }
+  }
   </script>
 
 </body>
