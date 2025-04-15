@@ -306,7 +306,7 @@
     
           // If this is a follow-up message and context exists
           if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
-            lastIntent = matchedIntent; // Save it!
+            lastIntent = lastMatchedIntent; // Save it!
             const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
     
             // If index found in context, reply with corresponding contextAnswer
@@ -321,7 +321,7 @@
           } else {
             // No context expected, so pick a regular answer
             const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-            lastIntent = matchedIntent; // Save it!
+            lastIntent = lastMatchedIntent; // Save it!
             addMessage(answer, "bot");
           }
     
