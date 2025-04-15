@@ -306,6 +306,7 @@
         const mapResults = [];
     
         for (const data of maps) {
+          console.log("Checking mapdata entry:", data);
           const prompts = data.prompts.map(p => p.toLowerCase());
           const match = prompts.find(p => text.includes(p));
           if (match && data.search) {
