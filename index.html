@@ -368,7 +368,7 @@
     
       // DEFAULT RESPONSE (same as before)
       console.log("No map/intent/context matched. Using fallback.");
-      await botRespond("I don't have a response for that yet.");
+      await addMessage("I don't have a response for that yet.", "bot");
     
       // 4. Store Unknown Prompt in Firebase (same as before)
       // (storing unknown prompt code remains unchanged)
