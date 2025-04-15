@@ -198,6 +198,12 @@
 
   <!-- Inside your <script> tag -->
   <script>
+    function logInteraction(userMessage, botResponse, matchedIntent) {
+      console.log("User:", userMessage);
+      console.log("Bot:", botResponse);
+      console.log("Matched Intent:", matchedIntent);
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
       authDomain: "bott-60537.firebaseapp.com",
