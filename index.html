@@ -280,6 +280,7 @@
     
       console.log("User input:", text);
     
+      // Fetch intents and mapdata collections
       const [intentSnap, mapSnap] = await Promise.all([
         db.collection("intents").get(),
         db.collection("mapdata").get()
@@ -287,11 +288,16 @@
     
       const intents = intentSnap.docs.map(doc => doc.data());
       const maps = mapSnap.docs.map(doc => doc.data());
-      intents.sort((a, b) => a.priority - b.priority);
     
       console.log("Fetched intents:", intents.length);
-      console.log("Fetched map entries:", maps.length);
+      console.log("Fetched mapdata entries:", maps.length); // This will show if mapdata is being fetched properly.
     
+      // Check if mapdata collection is empty
+      if (maps.length === 0) {
+        console.log("No mapdata found.");
+      }
+    
+      // Proceed with map checking logic if mapdata exists
       const mapTriggers = ["location of", "where is", "near me", "nearby"];
       const mapTriggerUsed = mapTriggers.find(trigger => text.includes(trigger));
     
@@ -325,7 +331,7 @@
     
         if (mapResults.length > 0) {
           for (const res of mapResults) {
-            await botRespond(res.answer + "<br>" + res.iframe, true);
+            await addMessage(res.answer + "<br>" + res.iframe, "bot");
           }
           return; // exit after map response
         } else {
@@ -333,46 +339,26 @@
         }
       }
     
-      // 2. CHECK INTENTS with Fuse.js fuzzy matching
+      // Check intents if no mapdata matched
       const fuse = new Fuse(intents, fuseOptions);
-      const result = fuse.search(text); // Perform fuzzy search
+      const result = fuse.search(text);
     
-      const matchedIntents = result.map(item => item.item); // Extract matched intents
+      const matchedIntents = result.map(item => item.item);
     
       if (matchedIntents.length > 0) {
         for (const intent of matchedIntents) {
           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
           console.log("Responding with intent answer:", response);
-          await botRespond(response);
+          await addMessage(response, "bot");
           lastMatchedIntent = intent;
         }
-        return; // exit after intent response
+        return;
       }
     
-      // Check for context response
-      if (lastMatchedIntent && Array.isArray(lastMatchedIntent.context) && Array.isArray(lastMatchedIntent.contextAnswers)) {
-        const lowerText = text.toLowerCase();
-    
-        for (let i = 0; i < lastMatchedIntent.context.length; i++) {
-          const contextItem = lastMatchedIntent.context[i].toLowerCase();
-    
-          if (lowerText.includes(contextItem)) {
-            const contextResponse = lastMatchedIntent.contextAnswers[i];
-            if (contextResponse) {
-              await botRespond(contextResponse);
-              return; // stop here so it doesn't send the normal answer
-            }
-          }
-        }
-      }
-    
-      // DEFAULT RESPONSE (same as before)
+      // Default response if no match
       console.log("No map/intent/context matched. Using fallback.");
       await addMessage("I don't have a response for that yet.", "bot");
-    
-      // 4. Store Unknown Prompt in Firebase (same as before)
-      // (storing unknown prompt code remains unchanged)
-    }
+  }
   </script>
 </body>
 </html>
