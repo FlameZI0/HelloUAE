@@ -212,7 +212,6 @@
     const auth = firebase.auth();
 
     let lastMatchedIntent = null;
-    let context = null;
     let currentUser = null;
 
     auth.onAuthStateChanged(user => {
@@ -265,9 +264,6 @@
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-
-    let lastIntent = null; // Keeps track of last matched intent
-    let context = null;    // Optional: track current context word
     
     async function getBestMatchResponse(userMessage) {
       const snapshot = await db.collection("intents").get();
