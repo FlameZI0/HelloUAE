@@ -359,10 +359,11 @@
         return;
       }
     
-      // Default response if no match
+    // Default response if no match
       console.log("No map/intent/context matched. Using fallback.");
       await addMessage("I don't have a response for that yet.", "bot");
-    } // This was the missing closing bracket!
+    } // <-- This is the missing closing bracket!
+
   </script>
 </body>
 </html>
