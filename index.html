@@ -271,7 +271,7 @@
     };
 
     async function sendMessage() {
-      const input = document.getElementById("userInput").replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"");
+      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g,"");
       const text = input.value.trim().toLowerCase();
       if (!text) return;
 
