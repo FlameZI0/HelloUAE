@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -101,7 +100,7 @@
       font-size: 16px;
     }
     img {
-      width: 100px;
+      width: 50px;
     }
     #logo {
       position: fixed;
@@ -176,8 +175,8 @@
     <button id="anonymous-signin">Continue without signing in</button>
   </div>
   <div id="logo">
-    <a href="https://flamezi0.github.io/HelloUAE/help.html" id="help">Suggest intents</a>
-    <img src="https://flamezi0.github.io/HelloUAE/Image20250415163721.png" alt="Logo">
+    <img src="https://hellouae.w3spaces.com/logo.png" alt="Logo">
+    <a href="https://hellouae.w3spaces.com/help.html" id="help">Suggest intents</a>
   </div>
 
   <div class="chat-container" id="chatContainer" style="display:none;">
@@ -193,17 +192,8 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
 
-  <!-- Fuse.js -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-
-  <!-- Inside your <script> tag -->
   <script>
-    function logInteraction(userMessage, botResponse, matchedIntent) {
-      console.log("User:", userMessage);
-      console.log("Bot:", botResponse);
-      console.log("Matched Intent:", matchedIntent);
-    }
-
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
       authDomain: "bott-60537.firebaseapp.com",
@@ -219,7 +209,6 @@
     const auth = firebase.auth();
 
     let lastMatchedIntent = null;
-    let context = null;
     let currentUser = null;
 
     auth.onAuthStateChanged(user => {
@@ -261,84 +250,43 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender) {
+    function addMessage(message, sender, isHTML = false) {
+      const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
-      messageElement.classList.add(sender === 'user' ? "message-user" : "message-bot");
-      messageElement.textContent = message;
-      document.getElementById("chat-box").appendChild(messageElement);
-      document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
+      messageElement.classList.add(sender === "user" ? "message-user" : "message-bot");
+
+      if (isHTML) {
+        messageElement.innerHTML = message;
+      } else {
+        messageElement.textContent = message;
+      }
+      
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function getBestMatchResponse(inputText) {
-      return db.collection("intents").get().then(snapshot => {
-        const intents = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          intents.push({
-            id: doc.id,
-            ...data
-          });
-        });
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const userMessage = input.value.trim();
+      if (userMessage) {
+        addMessage(userMessage, "user");
+        input.value = "";
 
-        // Create a Fuse.js instance
-        const fuse = new Fuse(intents, {
-          keys: ["prompts", "keywords", "context"],
-          includeScore: true,
-          threshold: 0.1, // stricter match
-        });
+        const querySnapshot = await db.collection("intents")
+          .where("prompts", "array-contains", userMessage.toLowerCase())
+          .get();
 
-        // Search for the best match based on input
-        const results = fuse.search(inputText);
-        if (results.length > 0) {
-          lastMatchedIntent = results[0].item;
-          return lastMatchedIntent;
+        if (!querySnapshot.empty) {
+          const randomDoc = querySnapshot.docs[Math.floor(Math.random() * querySnapshot.docs.length)];
+          lastMatchedIntent = randomDoc.id;
+          const response = randomDoc.data().answers;
+          addMessage(response, "bot", true);
+        } else {
+          addMessage("Sorry, I didn't understand that. Please try again.", "bot");
         }
-
-        return null;
-      });
+      }
     }
-
-    let lastMatchedIntent = null; // Declare a variable to store the last matched intent
-
-    function sendMessage() {
-      const userInput = document.getElementById("userInput").value.trim();
-      if (userInput === "") return;
-  
-      addMessage(userInput, "user");
-      document.getElementById("userInput").value = "";
-  
-      getBestMatchResponse(userInput).then(intent => {
-          if (intent) {
-              lastMatchedIntent = intent; // This will just update the existing variable, no redeclaration
-  
-              // If this is a follow-up message and context exists
-              if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers && lastMatchedIntent.contextAnswers.length > 0) {
-                  lastIntent = matchedIntent; // Save it!
-                  const contextIndex = lastMatchedIntent.context.findIndex(ctx => userInput.toLowerCase().includes(ctx.toLowerCase()));
-  
-                  // If index found in context, reply with corresponding contextAnswer
-                  if (contextIndex !== -1 && contextIndex < lastMatchedIntent.contextAnswers.length) {
-                      addMessage(lastMatchedIntent.contextAnswers[contextIndex], "bot");
-                  } else {
-                      // Fallback to a random normal answer if context didn't match properly
-                      const fallback = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-                      addMessage(fallback, "bot");
-                  }
-  
-              } else {
-                  // No context expected, so pick a regular answer
-                  const answer = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-                  lastIntent = matchedIntent; // Save it!
-                  addMessage(answer, "bot");
-              }
-  
-          } else {
-              addMessage("Sorry, I didn't understand that.", "bot");
-          }
-      });
-  }
   </script>
-
 </body>
 </html>
