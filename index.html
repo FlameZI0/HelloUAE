@@ -329,10 +329,12 @@
          minMatchCharLength: 3,
          useExtendedSearch: true
        };
-       
+
+
        async function sendMessage() {
          const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
          const text = input.toLowerCase();
+         const mapResults = [];  // Declare it once outside the loop.
          if (!text) return;
      
          addMessage(text, "user");
@@ -389,7 +391,6 @@
                  </iframe>
                `;
                
-               let mapResults = [];
                
                if (data.answers && data.answers.length > 0) {  // Ensure there are answers to pick from
                  mapResults.push({
