@@ -374,43 +374,38 @@
           }
         }
     
-        
-                // Check intents
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
         const matchedIntents = result.map(item => item.item);
         
-        // 🟢 Respond to new intent first & save it
+        // Step 2: If a new intent matched, use it and store it
         if (matchedIntents.length > 0) {
           const intent = matchedIntents[0];
           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
           lastMatchedIntent = intent;
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
-        } 
+        }
         
-        // ✅ If no intent matched, check context from previous intent
-        else if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
+        // Step 3: Else, check context if the current text includes any of the saved context triggers
+        else if (
+          lastMatchedIntent?.context?.length > 0 &&
+          lastMatchedIntent?.contextAnswers?.length > 0 &&
+          lastMatchedIntent.context.some(c => text.includes(c)) // 👈 only try if there's a match
+        ) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
-          console.log("Checking for context in:", lastMatchedIntent.context);
-          console.log("User text is:", text);
-          if (index !== -1 && lastMatchedIntent.contextAnswers[index]) {
-            const contextResponse = lastMatchedIntent.contextAnswers[index];
-            console.log("Matched context:", lastMatchedIntent.context[index]);
-            console.log("Responding with context answer:", contextResponse);
-            await addMessage(contextResponse, "bot");
-          } else {
-            console.log("No context matched. Using fallback.");
-            await addMessage("I don't have a response for that yet.", "bot");
-          }
-        } 
+          const contextResponse = lastMatchedIntent.contextAnswers[index];
+          console.log("Matched context:", lastMatchedIntent.context[index]);
+          console.log("Responding with context answer:", contextResponse);
+          await addMessage(contextResponse, "bot");
+        }
         
-        // 🔴 Fallback if nothing matched
+        // Step 4: Fallback
         else {
           console.log("No map/intent/context matched. Using fallback.");
           await addMessage("I don't have a response for that yet.", "bot");
         }
-      }      
+      }     
     </script>
   </body>
   </html>
