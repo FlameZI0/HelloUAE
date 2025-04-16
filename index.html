@@ -378,8 +378,18 @@
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
         const matchedIntents = result.map(item => item.item);
+
+        // Respond to new intent first & save it
+        if (matchedIntents.length > 0) {
+          const intent = matchedIntents[0];
+          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
+          lastMatchedIntent = intent;
+          console.log("Responding with intent answer:", response);
+          await addMessage(response, "bot");
+          return;
+        }
         
-        // ✅ First try context (use previous intent)
+        // ✅ Then try context
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           console.log("Checking for context in:", lastMatchedIntent.context);
@@ -391,16 +401,6 @@
             await addMessage(contextResponse, "bot");
             return;
           }
-        }
-        
-        // 🟢 No context match — respond to new intent & save it
-        if (matchedIntents.length > 0) {
-          const intent = matchedIntents[0];
-          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
-          lastMatchedIntent = intent;
-          console.log("Responding with intent answer:", response);
-          await addMessage(response, "bot");
-          return;
         }
         
         // Fallback
