@@ -319,6 +319,26 @@
         }
       });
     }
+
+    function suggestIntent() {
+      if (lastMatchedIntent) {
+        const intentData = {
+          prompt: lastMatchedIntent.prompts,
+          answer: "Here is the response to your suggestion.",
+          keywords: [],
+          context: "user_suggested",
+          contextAnswers: ["suggestion"],
+          priority: 1
+        };
+        db.collection("intents").add(intentData)
+          .then(() => {
+            addMessage("Intent suggested!", "bot");
+          }).catch(error => {
+            console.error("Error suggesting intent:", error);
+          });
+      }
+    }
   </script>
+
 </body>
 </html>
