@@ -392,14 +392,15 @@
     
         const matchedIntents = result.map(item => item.item);
     
-        if (matchedIntents.length > 0) {
-          for (const intent of matchedIntents) {
-            const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
-            console.log("Responding with intent answer:", response);
-            await addMessage(response, "bot");
-            lastMatchedIntent = intent; // Update last matched intent
+        if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
+          const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
+          if (index !== -1 && lastMatchedIntent.contextAnswers[index]) {
+            const contextResponse = lastMatchedIntent.contextAnswers[index];
+            console.log("Matched context:", lastMatchedIntent.context[index]);
+            console.log("Responding with context answer:", contextResponse);
+            await addMessage(contextResponse, "bot");
+            return;
           }
-          return;
         }
     
         // Sort by priority
