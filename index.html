@@ -252,6 +252,9 @@
   
       let lastMatchedIntent = null;
       let currentUser = null;
+
+      let lastUserMessage = "";
+      let lastBotResponse = "";
   
       auth.onAuthStateChanged(user => {
         console.log("Auth state changed:", user);
@@ -327,9 +330,6 @@
         minMatchCharLength: 3,
         useExtendedSearch: true
       };
-      
-      let lastUserMessage = "";
-      let lastBotResponse = "";
       
       async function sendMessage() {
         const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
