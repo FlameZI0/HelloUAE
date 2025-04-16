@@ -403,15 +403,7 @@
           }
         }
     
-        // Sort by priority
-        matchedIntents.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-    
-        // Pick the top one
-        const bestIntent = matchedIntents[0];
-    
-        if (bestIntent) {
-          addMessage(bestIntent.answer, "bot");
-        }
+        addMessage(bestIntent.answer, "bot");
     
         // Default response if no match
         console.log("No map/intent/context matched. Using fallback.");
