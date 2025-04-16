@@ -320,36 +320,39 @@
     }
 
     
-          async function getResponse(userInput) {
+    async function getResponse(userInput) {
       const inputLower = userInput.toLowerCase();
-
-      // Step 1: Handle context-based follow-ups
+      console.log("User input (lowercase):", inputLower);
+    
+      // Context check
       if (lastIntent && lastIntent.context && lastIntent.contextAnswers) {
         const contextIndex = lastIntent.context.indexOf(inputLower);
-        if (contextIndex !== -1 && lastIntent.contextAnswers[contextIndex]) {
-          return lastIntent.contextAnswers[contextIndex];
+        if (contextIndex !== -1) {
+          const contextResponse = lastIntent.contextAnswers[contextIndex];
+          console.log("Context-based response:", contextResponse);
+          return contextResponse;
         }
       }
-
-      // Step 2: Fetch intents from Firestore
-      const snapshot = await db.collection("intents").get();
-      const intents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Step 3: Fuse.js for fuzzy matching
+    
+      // Get all intents
+      const intentsSnapshot = await db.collection("intents").get();
+      const intents = intentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched intents:", intents.length);
+    
+      // Fuse.js search
       const fuse = new Fuse(intents, fuseOptions);
       const result = fuse.search(inputLower);
-
+      console.log("Fuse.js search result:", result);
+    
       if (result.length > 0) {
-        const bestMatch = result[0].item;
-        lastIntent = bestMatch;
-        lastIntentName = bestMatch.id;
-        return bestMatch.answer;
+        const matchedIntent = result[0].item;
+        console.log("Matched intent:", matchedIntent);
+        lastIntent = matchedIntent;
+        lastIntentName = matchedIntent.id;
+        return matchedIntent.answers[0] || "I found something, but couldn't figure out what to say.";
       }
-
-      // Step 4: Fallback message
-      lastIntent = null;
-      lastIntentName = null;
-      return "I'm not sure about that. Can you rephrase or ask something else?";
+    
+      return "I'm not sure I understand. You can suggest a new intent using the Suggest button above!";
     }
   </script>
 </body>
