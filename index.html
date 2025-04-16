@@ -292,10 +292,12 @@
   
       const fuseOptions = {
         includeScore: true,
-        threshold: 0.2, // The threshold value (lower = more strict, higher = more lenient)
-        keys: ["keywords", "prompts"], // Search in the keywords and prompts
-        minMatchCharLength: 3, // ignore tiny matches like "hi" in "Khalifa"
+        threshold: 0.2, // or your preferred value
+        keys: ["keywords", "prompts"], // ✅ No square brackets
+        minMatchCharLength: 3,
+        useExtendedSearch: true
       };
+
   
       async function sendMessage() {
         const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
