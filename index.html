@@ -374,20 +374,12 @@
           }
         }
     
-        // Check intents if no mapdata matched
+        // Check intents
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
         const matchedIntents = result.map(item => item.item);
         
-        // Regular intent answer if no context
-        if (matchedIntents.length > 0) {
-          const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
-          console.log("Responding with intent answer:", response);
-          await addMessage(response, "bot");
-          return;
-        }
-        
-        // ✅ Try to respond to context FIRST using previous intent
+        // ✅ First try context (use previous intent)
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           console.log("Checking for context in:", lastMatchedIntent.context);
@@ -401,19 +393,21 @@
           }
         }
         
-        // 🟢 No context match — now update lastMatchedIntent
+        // 🟢 No context match — respond to new intent & save it
         if (matchedIntents.length > 0) {
-          lastMatchedIntent = matchedIntents[0];
-          const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+          const intent = matchedIntents[0];
+          const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
+          lastMatchedIntent = intent;
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
           return;
         }
         
-        // Default fallback
+        // Fallback
         console.log("No map/intent/context matched. Using fallback.");
         await addMessage("I don't have a response for that yet.", "bot");
-    }  // <-- Missing closing bracket was added here!
+
+    }
     </script>
   </body>
   </html>
