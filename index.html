@@ -389,23 +389,24 @@
                   src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encodeURIComponent(data.search)}">
                 </iframe>
               `;
-    
-              mapResults.push({
-                answer: data.answers[Math.floor(Math.random() * data.answers.length)],
-                iframe: iframeHTML
-              });
-            }
-          }
-    
-          if (mapResults.length > 0) {
-            for (const res of mapResults) {
-              await addMessage(res.answer + "<br>" + res.iframe, "bot");
-            }
-            return;  // Exit after map response
-          } else {
-            console.log("No map matches found.");
-          }
-        }
+              
+              let mapResults = [];
+              
+              if (data.answers && data.answers.length > 0) {  // Ensure there are answers to pick from
+                mapResults.push({
+                  answer: data.answers[Math.floor(Math.random() * data.answers.length)], // Random answer
+                  iframe: iframeHTML  // Embed the iframe here
+                });
+              }
+              
+              if (mapResults.length > 0) {
+                for (const res of mapResults) {
+                  await addMessage(res.answer + "<br>" + res.iframe, "bot");  // Send both answer and iframe to the chat
+                }
+                return;  // Exit after sending map response
+              } else {
+                console.log("No map matches found.");  // Handle the case where no maps were found
+              }
     
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
