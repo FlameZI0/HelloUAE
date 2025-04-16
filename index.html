@@ -469,7 +469,7 @@
       
           const feedbackRef = firebase.firestore()
             .collection("feedback")
-            .doc(`${user.uid}_${lastMatchedIntent.intent_name || "unknown"}`);
+            .doc(`${user.isAnonymous ? "unonymous_user" : (user.displayName)}_${lastMatchedIntent.intent_name || "unknown"}`);
       
           await feedbackRef.set({
             prompt: lastUserMessage,
