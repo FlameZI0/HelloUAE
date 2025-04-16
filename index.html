@@ -402,9 +402,14 @@
             return;
           }
         }
-    
-        addMessage(bestIntent.answer, "bot");
-    
+
+        if (matchedIntents.length > 0) {
+          const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+          console.log("Responding with intent answer:", response);
+          await addMessage(response, "bot");
+          return;
+        }
+        
         // Default response if no match
         console.log("No map/intent/context matched. Using fallback.");
         await addMessage("I don't have a response for that yet.", "bot");
