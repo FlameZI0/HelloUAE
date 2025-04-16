@@ -5,188 +5,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DuneAI</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #343541;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      color: white;
-    }
-    
-    /* TOP BARS */
-    #auth-bar, #signins, #logo {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background: #2c2d3a;
-      border-radius: 8px;
-      margin: 10px;
-    }
-    
-    #auth-bar, #signins {
-      justify-content: flex-end;
-    }
-    
-    #logo {
-      justify-content: flex-start;
-    }
-    
-    #login-btn, #logout-btn, #google-signin, #anonymous-signin {
-      padding: 10px 15px;
-      border-radius: 25px;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      background: #0078ff;
-    }
-    
-    #google-signin { background-color: #fbbc05; color: black; }
-    #anonymous-signin { background-color: #6c757d; }
-    
-    /* MAIN CHAT AREA */
-    .chat-wrapper {
-      flex: 1;
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-      padding: 0 10px;
-    }
-    
-    .chat-container {
-      flex-grow: 1;
-      background: #40414f;
-      border-radius: 10px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 75vh;
-      min-height: 400px;
-    }
-    
-    /* CHAT BOX */
-    #chat-box {
-      flex-grow: 1;
-      padding: 15px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background: #26262f;
-    }
-    
-    /* MESSAGES */
-    .message {
-      max-width: 75%;
-      padding: 12px;
-      border-radius: 12px;
-      word-wrap: break-word;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    
-    .message-user {
-      align-self: flex-end;
-      background: #0078ff;
-      color: white;
-    }
-    
-    .message-bot {
-      align-self: flex-start;
-      background: #444654;
-      color: white;
-    }
-    
-    /* INPUT BAR */
-    .input-container {
-      display: flex;
-      padding: 10px;
-      background: #40414f;
-      border-top: 1px solid #565869;
-      gap: 10px;
-    }
-    
-    input[type="text"] {
-      flex-grow: 1;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 25px;
-      outline: none;
-      font-size: 16px;
-      background: #565869;
-      color: white;
-    }
-    
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 25px;
-      background: #0078ff;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    
-    /* HELP BUTTON */
-    #help {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    
-    #help:hover {
-      background-color: #45a049;
-    }
-    
-    img {
-      width: 100px;
-    }
-    
-    /* MOBILE RESPONSIVE */
-    @media (max-width: 600px) {
-      #auth-bar, #signins, #logo {
-        flex-direction: column;
-        width: 100%;
-        align-items: stretch;
-        margin: 5px 10px;
-      }
-    
-      .chat-wrapper {
-        padding: 0 5px;
-      }
-    
-      .chat-container {
-        height: 70vh;
-        min-height: 350px;
-      }
-    
-      input[type="text"], button {
-        font-size: 14px;
-      }
-    
-      .message {
-        font-size: 14px;
-      }
-    
-      img {
-        width: 70px;
-      }
-    }
+   body {
+       font-family: Arial, sans-serif;
+       background-color: #343541;
+       margin: 0;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       height: 100vh;
+       justify-content: center;
+       color: white;
+     }
+     #auth-bar {
+       position: fixed;
+       top: 20px;
+       right: 20px;
+       display: flex;
+       justify-content: space-between;
+       width: auto;
+       padding: 10px 15px;
+       background: #2c2d3a;
+       border-radius: 8px;
+       align-items: center;
+     }
+     #login-btn, #logout-btn {
+       background: #0078ff;
+       padding: 10px 15px;
+       border-radius: 25px;
+       color: white;
+       cursor: pointer;
+     }
+     .chat-container {
+       width: 100%;
+       max-width: 600px;
+       height: 85vh;
+       background: #40414f;
+       border-radius: 10px;
+       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+       display: flex;
+       flex-direction: column;
+       overflow: hidden;
+     }
+     #chat-box {
+       flex-grow: 1;
+       padding: 15px;
+       overflow-y: auto;
+       display: flex;
+       flex-direction: column;
+       gap: 10px;
+       background: #26262f;
+       scrollbar-width: none;
+     }
+     .message {
+       max-width: 75%;
+       padding: 12px;
+       border-radius: 12px;
+       word-wrap: break-word;
+       font-size: 16px;
+       line-height: 1.5;
+     }
+     .message-user {
+       align-self: flex-end;
+       background: #0078ff;
+       color: white;
+     }
+     .message-bot {
+       align-self: flex-start;
+       background: #444654;
+       color: white;
+     }
+     .input-container {
+       display: flex;
+       padding: 15px;
+       background: #40414f;
+       border-top: 1px solid #565869;
+     }
+     input[type="text"] {
+       flex-grow: 1;
+       padding: 12px;
+       border: none;
+       border-radius: 25px;
+       outline: none;
+       font-size: 16px;
+       background: #565869;
+       color: white;
+     }
+     button {
+       margin-left: 10px;
+       padding: 12px 15px;
+       border: none;
+       border-radius: 25px;
+       background: #0078ff;
+       color: white;
+       cursor: pointer;
+       font-size: 16px;
+     }
+     img {
+       width: 100px;
+     }
+     #logo {
+       position: fixed;
+       top: 20px;
+       left: 20px;
+       display: flex;
+       justify-content: space-between;
+       width: auto;
+       padding: 10px 15px;
+       background: #2c2d3a;
+       border-radius: 8px;
+       align-items: center;
+     }
+     #help {
+       display: inline-block;
+       padding: 10px 20px;
+       background-color: #4CAF50; /* green background */
+       color: white;
+       text-decoration: none;
+       border: none;
+       border-radius: 8px;
+       font-size: 16px;
+       cursor: pointer;
+       transition: background-color 0.3s ease;
+     }
+ 
+     #help:hover {
+       background-color: #45a049; /* darker green on hover */
+     }
+     #signins {
+       position: fixed;
+       top: 20px;
+       right: 20px;
+       display: flex;
+       justify-content: space-between;
+       width: auto;
+       padding: 10px 15px;
+       background: #2c2d3a;
+       border-radius: 8px;
+       align-items: center;
+     }
+     #google-signin {
+       background-color: #fbbc05; /* Google yellow */
+       padding: 10px 20px;
+       border-radius: 25px;
+       color: white;
+       font-size: 16px;
+       cursor: pointer;
+     }
+ 
+     #anonymous-signin {
+       background-color: #6c757d; /* Neutral gray for anonymous sign-in */
+       padding: 10px 20px;
+       border-radius: 25px;
+       color: white;
+       font-size: 16px;
+       cursor: pointer;
+     }
   </style>
 </head>
 <body>
@@ -198,10 +171,12 @@
     </div>
     <button id="logout-btn" onclick="logout()">Logout</button>
   </div>
+  
   <div id="signins">
     <button id="google-signin">Sign in with Google</button>
     <button id="anonymous-signin">Continue without signing in</button>
   </div>
+
   <div id="logo">
     <a href="https://flamezi0.github.io/HelloUAE/help.html" id="help">Suggest intents</a>
     <img src="https://flamezi0.github.io/HelloUAE/Image20250415163721.png" alt="Logo">
@@ -223,7 +198,6 @@
   <!-- Fuse.js -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 
-  <!-- Inside your <script> tag -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
@@ -240,10 +214,10 @@
     const auth = firebase.auth();
 
     let lastMatchedIntent = null;
+    let context = null;
     let currentUser = null;
 
     auth.onAuthStateChanged(user => {
-      console.log("Auth state changed:", user);
       if (user) {
         currentUser = user;
         document.getElementById("google-signin").style.display = "none";
@@ -281,83 +255,114 @@
       auth.signOut();
     }
 
-    function addMessage(message, sender, isHTML = true) {
+    function addMessage(message, sender) {
+      if (typeof message !== "string") {
+        message = JSON.stringify(message); // or message = String(message);
+      }
+    
+    const messageWithBreaks = message.replace(/\n/g, "<br>");
       const chatBox = document.getElementById("chat-box");
       const messageElement = document.createElement("div");
-      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
-      messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
+      messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");        
+      messageElement.innerHTML = message.replace(/\n/g, "<br>");
       chatBox.appendChild(messageElement);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     const fuseOptions = {
       includeScore: true,
-      threshold: 0.1, // The threshold value (lower = more strict, higher = more lenient)
-      keys: ["keywords", "prompts"], // Search in the keywords and prompts
-      useExtendedSearch: true
+      keys: ["prompts", "keywords"]
     };
 
-   async function sendMessage() {
-      const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
-      const text = input.toLowerCase();
-      if (!text) return;
-    
-      addMessage(text, "user");
-      document.getElementById("userInput").value = "";
-    
-      console.log("User input:", text);
-    
-      // Fetch intents and mapdata from Firestore
-      const [intentSnap, mapSnap] = await Promise.all([
-        db.collection("intents").get(),
-        db.collection("mapdata").get()  // Fetching mapdata documents
-      ]);
-    
-      const intents = intentSnap.docs.map(doc => doc.data());
-      const maps = mapSnap.docs.map(doc => doc.data());
-    
-      console.log("Fetched intents:", intents.length);
-      console.log("Fetched mapdata entries:", maps.length);
-    
-      // Check for relevant mapdata from Firestore
-      const iframeResponse = maps.find(map => map.url && text.includes(map.url));
-    
-      if (iframeResponse) {
-        // If a relevant map URL is found in the mapdata, send it as a response
-        const mapSearchResult = iframeResponse.search || "No relevant search found for the map.";
-        addMessage(mapSearchResult, "bot");
-        return;
+    let intentsCache = [];
+
+    db.collection("intents").get().then(snapshot => {
+      intentsCache = snapshot.docs.map(doc => doc.data());
+    });
+
+    function getIntentResponse(userInput) {
+      if (!userInput.trim()) {
+        return "Please enter something!";
       }
-    
-      // Search for matching intents in Firestore
-      const intent = intents.find(i => i.prompts.some(p => p.toLowerCase() === text));
-      if (intent) {
-        addMessage(intent.answer, "bot");
-        return;
-      }
-    
-      // If no match, use a Google Maps API search for a location if relevant
-      if (text.includes("map") || text.includes("location")) {
-        const searchQuery = text.replace("location", "").replace("map", "").trim();
-        if (searchQuery) {
-          const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";  // Replace with your actual API key
-          const apiUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchQuery}&key=${apiKey}`;
-    
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-    
-          if (data.results && data.results.length > 0) {
-            const place = data.results[0];
-            const locationInfo = `Found location: ${place.name} - ${place.formatted_address}`;
-            addMessage(locationInfo, "bot");
-          } else {
-            addMessage("Sorry, no location found for your search.", "bot");
-          }
-        }
+
+      const fuse = new Fuse(intentsCache, fuseOptions);
+      const results = fuse.search(userInput);
+
+      if (results.length > 0 && results[0].score < 0.1) {
+        lastMatchedIntent = results[0].item;
+        return lastMatchedIntent.answers || "Sorry, I couldn't find a suitable answer.";
       } else {
-        addMessage("I'm not sure how to respond to that. Could you try again?", "bot");
+        return "Sorry, I couldn't understand your question.";
       }
     }
+
+    function sendMessage() {
+      const userInput = document.getElementById("userInput").value.trim();
+      if (userInput === "") return;
+
+      addMessage(userInput, "user");
+      const botResponse = getIntentResponse(userInput);
+      addMessage(botResponse, "bot", true);
+      document.getElementById("userInput").value = "";
+
+      getBestMatchResponse(userInput).then(intent => {
+        if (intent) {
+          const contextResponse = lastMatchedIntent.context ? lastMatchedIntent.contextAnswers : [];
+          addMessage(lastMatchedIntent.answers, "bot");
+        } else {
+          addMessage("Sorry, I didn't understand that.", "bot");
+        }
+      });
+    }
+
+    function getBestMatchResponse(userInput) {
+      return db.collection("intents").get().then(snapshot => {
+        const intents = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          intents.push({
+            id: doc.id,
+            ...data
+          });
+        });
+    
+        const fuse = new Fuse(intents, {
+          keys: ["prompts", "keywords", "context"],
+          includeScore: true,
+        });
+    
+        const results = fuse.search(userInput);
+        if (results.length > 0 && results[0].score < 0.5) {
+          lastMatchedIntent = results[0].item;
+    
+          // 1. Context check
+          if (lastMatchedIntent.context && lastMatchedIntent.contextAnswers) {
+            for (let i = 0; i < lastMatchedIntent.context.length; i++) {
+              if (userInput.includes(lastMatchedIntent.context[i])) {
+                const ctxAnswer = lastMatchedIntent.contextAnswers[i];
+                if (Array.isArray(ctxAnswer)) {
+                  // If context answer is an array, pick one randomly
+                  const randomIndex = Math.floor(Math.random() * ctxAnswer.length);
+                  return ctxAnswer[randomIndex];
+                  console.log("ctxAnswer:", ctxAnswer);
+                } else {
+                  return ctxAnswer; // Plain string
+                }
+              }
+            }
+          }
+    
+          // 2. No context match? Pick from regular answers randomly
+          if (Array.isArray(lastMatchedIntent.answers) && lastMatchedIntent.answers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * lastMatchedIntent.answers.length);
+            return lastMatchedIntent.answers[randomIndex];
+          }
+        }
+    
+        return "Sorry, I couldn't find a suitable answer.";
+      });
+    }
   </script>
+
 </body>
-</html>
+</html> 
