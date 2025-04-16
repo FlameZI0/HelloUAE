@@ -391,7 +391,13 @@
         const result = fuse.search(text);
     
         const matchedIntents = result.map(item => item.item);
-    
+
+        // Update lastMatchedIntent
+        if (matchedIntents.length > 0) {
+          lastMatchedIntent = matchedIntents[0];
+        }
+        
+        // Context check
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           if (index !== -1 && lastMatchedIntent.contextAnswers[index]) {
@@ -402,7 +408,8 @@
             return;
           }
         }
-
+        
+        // Regular intent answer if no context
         if (matchedIntents.length > 0) {
           const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
           console.log("Responding with intent answer:", response);
@@ -410,7 +417,7 @@
           return;
         }
         
-        // Default response if no match
+        // Default fallback
         console.log("No map/intent/context matched. Using fallback.");
         await addMessage("I don't have a response for that yet.", "bot");
     }  // <-- Missing closing bracket was added here!
