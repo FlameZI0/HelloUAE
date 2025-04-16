@@ -418,9 +418,10 @@
           lastMatchedIntent = intent;
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
-          lastBotResponse = response; // Save what bot replied
-          addFeedbackButtons(); // Add feedback buttons
-
+          lastBotResponse = response;
+          if (math.Random() > 0.1) {// Save what bot replied
+            addFeedbackButtons(); // Add feedback buttons
+          }
         }
         
         // Step 3: Else, check context if the current text includes any of the saved context triggers
@@ -454,6 +455,8 @@
         `;
       
         lastMessage.appendChild(feedbackDiv);
+        document.getElementById("userInput").disabled = true;
+        document.getElementById("userInput").placeholder.innerHTML = "Must give feedback before continuing";
       }
       async function sendFeedback(feedbackType) {
         try {
