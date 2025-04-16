@@ -374,7 +374,8 @@
           }
         }
     
-        // Check intents
+        
+                // Check intents
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
         const matchedIntents = result.map(item => item.item);
@@ -386,11 +387,10 @@
           lastMatchedIntent = intent;
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
-          return;
-        }
+        } 
         
         // ✅ If no intent matched, check context from previous intent
-        if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
+        else if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           console.log("Checking for context in:", lastMatchedIntent.context);
           console.log("User text is:", text);
@@ -399,14 +399,19 @@
             console.log("Matched context:", lastMatchedIntent.context[index]);
             console.log("Responding with context answer:", contextResponse);
             await addMessage(contextResponse, "bot");
-            return;
+          } else {
+            console.log("No context matched. Using fallback.");
+            await addMessage("I don't have a response for that yet.", "bot");
           }
-        }
+        } 
         
         // 🔴 Fallback if nothing matched
-        console.log("No map/intent/context matched. Using fallback.");
-        await addMessage("I don't have a response for that yet.", "bot");
-    }
+        else {
+          console.log("No map/intent/context matched. Using fallback.");
+          await addMessage("I don't have a response for that yet.", "bot");
+        }
+
+        
     </script>
   </body>
   </html>
