@@ -292,10 +292,9 @@
   
       const fuseOptions = {
         includeScore: true,
-        threshold: 0.1, // The threshold value (lower = more strict, higher = more lenient)
-        keys: ["keywords", "prompts"], // Search in the keywords and prompts
+        threshold: 0.2, // The threshold value (lower = more strict, higher = more lenient)
+        keys: ["keywords[]", "prompts[]"], // Search in the keywords and prompts
         minMatchCharLength: 3, // ignore tiny matches like "hi" in "Khalifa"
-        useExtendedSearch: true
       };
   
       async function sendMessage() {
