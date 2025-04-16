@@ -299,7 +299,26 @@
 
     let lastIntent = null;
     let lastIntentName = null;
+
+    function sendMessage() {
+        const userInput = document.getElementById("userInput").value;
+        if (userInput.trim() === "") {
+            return; // Do nothing if the input is empty
+        }
+        
+        // Add user message to chat
+        addMessage(userInput, "user");
+        
+        // Get response from the chatbot
+        getResponse(userInput).then(response => {
+            // Add bot message to chat
+            addMessage(response, "bot");
+        });
     
+        // Clear the input field after sending the message
+        document.getElementById("userInput").value = "";
+    }
+
     async function getResponse(userInput) {
       const db = firebase.firestore();
       const inputLower = userInput.toLowerCase();
