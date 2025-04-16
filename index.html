@@ -427,13 +427,7 @@
         
         if (bestIntent) {
           respondWith(bestIntent.answer);
-        }
-  
-        // Default response if no match
-        console.log("No map/intent/context matched. Using fallback.");
-        await addMessage("I don't have a response for that yet.", "bot");
-      }  // <-- Missing closing bracket was added here!
-      
+        }      
         // Step 3: If no match found
         return "I'm not sure about that. Could you ask something else?";
       }
