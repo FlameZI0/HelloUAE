@@ -311,6 +311,7 @@
         db.collection("intents").get(),
         db.collection("mapdata").get()
       ]);
+
     
       const intents = intentSnap.docs.map(doc => doc.data());
       const maps = mapSnap.docs.map(doc => doc.data());
@@ -387,7 +388,17 @@
         }
         return;
       }
-    
+
+      // Sort by priority
+      matchedIntents.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      
+      // Pick the top one
+      const bestIntent = matchedIntents[0];
+      
+      if (bestIntent) {
+        respondWith(bestIntent.answer);
+      }
+
       // Default response if no match
       console.log("No map/intent/context matched. Using fallback.");
       await addMessage("I don't have a response for that yet.", "bot");
