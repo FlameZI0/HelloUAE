@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-   <html lang="en">
-   <head>
-     <meta charset="UTF-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1" />
-     <title>DuneAI</title>
-     <style>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>DuneAI</title>
+        <style>
        * {
          box-sizing: border-box;
        }
@@ -198,44 +198,41 @@
            width: 70px;
          }
        }
-     </style>
-   </head>
-   <body>
+        </style>
+    </head>
+    <body>
  
-     <div id="auth-bar" style="display:none;">
-       <div style="display: flex; align-items: center; gap: 10px;">
-         <img id="user-pfp" src="" alt="PFP" style="width: 32px; height: 32px; border-radius: 50%;">
-         <p id="username">Logged in as:</p>
-       </div>
-       <button id="logout-btn" onclick="logout()">Logout</button>
-     </div>
-     <div id="signins">
-       <button id="google-signin">Sign in with Google</button>
-       <button id="anonymous-signin">Continue without signing in</button>
-     </div>
-     <div id="logo">
-       <a href="https://flamezi0.github.io/HelloUAE/help.html" id="help">Suggest intents</a>
-       <img src="https://flamezi0.github.io/HelloUAE/Image20250415163721.png" alt="Logo">
-     </div>
+        <div id="auth-bar" style="display:none;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img id="user-pfp" src="" alt="PFP" style="width: 32px; height: 32px; border-radius: 50%;">
+                <p id="username">Logged in as:</p>
+            </div>
+            <button id="logout-btn" onclick="logout()">Logout</button>
+            <div id="signins">
+                <button id="google-signin">Sign in with Google</button>
+                <button id="anonymous-signin">Continue without signing in</button>
+            </div>
+            <div id="logo">
+                <a href="https://flamezi0.github.io/HelloUAE/help.html" id="help">Suggest intents</a>
+                <img src="https://flamezi0.github.io/HelloUAE/Image20250415163721.png" alt="Logo">
+            </div>
  
-     <div class="chat-container" id="chatContainer" style="display:none;">
-       <div id="chat-box"></div>
-       <div class="input-container">
-         <input type="text" id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()">
-         <button onclick="sendMessage()">Send</button>
-       </div>
-     </div>
+            <div class="chat-container" id="chatContainer" style="display:none;">
+                <div id="chat-box"></div>
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
  
-     <!-- Firebase SDKs -->
-     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
  
-     <!-- Fuse.js -->
-     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
  
-     <!-- Inside your <script> tag -->
-     <script>
+
+            <script>
        const firebaseConfig = {
          apiKey: "AIzaSyCQcwvZ1dDIWqn5T7aU7KIGlg9GMslvDmI",
          authDomain: "bott-60537.firebaseapp.com",
@@ -492,6 +489,6 @@
        }
        console.log("Done!");
      
-      </script>
-   </body>
-   </html>
+            </script>
+    </body>
+    </html>
