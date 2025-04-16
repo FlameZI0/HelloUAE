@@ -5,40 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DuneAI</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: Arial, sans-serif;
       background-color: #343541;
       margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      justify-content: center;
       color: white;
     }
     
+    /* TOP BARS */
     #auth-bar, #signins, #logo {
-      position: fixed;
-      top: 20px;
       display: flex;
-      justify-content: space-between;
-      padding: 10px 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
       background: #2c2d3a;
       border-radius: 8px;
-      align-items: center;
-      z-index: 10;
+      margin: 10px;
     }
     
     #auth-bar, #signins {
-      right: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
+      justify-content: flex-end;
     }
     
     #logo {
-      left: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
+      justify-content: flex-start;
     }
     
     #login-btn, #logout-btn, #google-signin, #anonymous-signin {
@@ -48,33 +48,35 @@
       font-size: 14px;
       cursor: pointer;
       border: none;
-    }
-    
-    #login-btn, #logout-btn {
       background: #0078ff;
     }
     
-    #google-signin {
-      background-color: #fbbc05;
-    }
+    #google-signin { background-color: #fbbc05; color: black; }
+    #anonymous-signin { background-color: #6c757d; }
     
-    #anonymous-signin {
-      background-color: #6c757d;
+    /* MAIN CHAT AREA */
+    .chat-wrapper {
+      flex: 1;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      padding: 0 10px;
     }
     
     .chat-container {
-      width: 90%;
-      max-width: 600px;
-      height: 85vh;
+      flex-grow: 1;
       background: #40414f;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      margin-top: 100px;
+      height: 75vh;
+      min-height: 400px;
     }
     
+    /* CHAT BOX */
     #chat-box {
       flex-grow: 1;
       padding: 15px;
@@ -83,9 +85,9 @@
       flex-direction: column;
       gap: 10px;
       background: #26262f;
-      scrollbar-width: none;
     }
     
+    /* MESSAGES */
     .message {
       max-width: 75%;
       padding: 12px;
@@ -107,9 +109,10 @@
       color: white;
     }
     
+    /* INPUT BAR */
     .input-container {
       display: flex;
-      padding: 15px;
+      padding: 10px;
       background: #40414f;
       border-top: 1px solid #565869;
       gap: 10px;
@@ -117,7 +120,7 @@
     
     input[type="text"] {
       flex-grow: 1;
-      padding: 12px;
+      padding: 10px 15px;
       border: none;
       border-radius: 25px;
       outline: none;
@@ -127,7 +130,7 @@
     }
     
     button {
-      padding: 12px 15px;
+      padding: 10px 15px;
       border: none;
       border-radius: 25px;
       background: #0078ff;
@@ -136,6 +139,7 @@
       font-size: 16px;
     }
     
+    /* HELP BUTTON */
     #help {
       padding: 10px 20px;
       background-color: #4CAF50;
@@ -143,7 +147,6 @@
       text-decoration: none;
       border-radius: 8px;
       font-size: 16px;
-      transition: background-color 0.3s ease;
     }
     
     #help:hover {
@@ -154,34 +157,26 @@
       width: 100px;
     }
     
-    /* 🔁 MOBILE OPTIMIZATION */
+    /* MOBILE RESPONSIVE */
     @media (max-width: 600px) {
-      .chat-container {
-        height: 80vh;
-        margin-top: 120px;
-      }
-    
       #auth-bar, #signins, #logo {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        width: calc(100% - 40px);
-        left: 10px !important;
-        right: 10px !important;
+        width: 100%;
+        align-items: stretch;
+        margin: 5px 10px;
       }
     
-      #help {
-        font-size: 14px;
-        padding: 8px 12px;
+      .chat-wrapper {
+        padding: 0 5px;
       }
     
-      input[type="text"] {
-        font-size: 14px;
+      .chat-container {
+        height: 70vh;
+        min-height: 350px;
       }
     
-      button {
+      input[type="text"], button {
         font-size: 14px;
-        padding: 10px;
       }
     
       .message {
@@ -189,7 +184,7 @@
       }
     
       img {
-        width: 80px;
+        width: 70px;
       }
     }
   </style>
