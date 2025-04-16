@@ -282,7 +282,7 @@
       }
   
       async function addMessage(text, sender) {
-        const chatContainer = document.getElementById("chat");
+        const chatContainer = document.getElementById("chat-box");
         const messageEl = document.createElement("div");
         messageEl.className = sender === "bot" ? "bot-message" : "user-message";
         messageEl.innerHTML = text.replace(/\n/g, "<br>");
