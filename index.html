@@ -307,10 +307,10 @@
     
       console.log("User input:", text);
     
-      // Fetch intents and mapdata
-      const [intentSnap, mapSnap] = await Promise.all([ 
+      // Fetch intents and mapdata from Firestore
+      const [intentSnap, mapSnap] = await Promise.all([
         db.collection("intents").get(),
-        db.collection("mapdata").get()
+        db.collection("mapdata").get()  // Fetching mapdata documents
       ]);
     
       const intents = intentSnap.docs.map(doc => doc.data());
@@ -319,37 +319,54 @@
       console.log("Fetched intents:", intents.length);
       console.log("Fetched mapdata entries:", maps.length);
     
-      // Fuse search
-      const fuse = new Fuse(intents, fuseOptions);
-      const result = fuse.search(text);
-      console.log("Fuse result:", result);
+      // Check for relevant mapdata from Firestore
+      const iframeResponse = maps.find(map => map.url && text.includes(map.url));
     
-      if (result.length > 0 && result[0].score <= fuseOptions.threshold) {
-        const matchedIntent = result[0].item;
-        lastMatchedIntent = matchedIntent;
+      if (iframeResponse) {
+        // If a relevant map URL is found in the mapdata, send it as a response
+        const mapSearchResult = iframeResponse.search || "No relevant search found for the map.";
+        addMessage(mapSearchResult, "bot");
+        return;
+      }
     
-        let response = matchedIntent.answers[0];
+      // Search for matching intents in Firestore
+      const intent = intents.find(i => i.prompts.some(p => p.toLowerCase() === text));
+      if (intent) {
+        addMessage(intent.answer, "bot");
+        return;
+      }
     
-        // Contextual follow-up
-        if (matchedIntent.context && matchedIntent.contextAnswers) {
-          const contextMatch = matchedIntent.context.find((ctx, i) => text.includes(ctx));
-          if (contextMatch) {
-            const index = matchedIntent.context.indexOf(contextMatch);
-            response = matchedIntent.contextAnswers[index] || response;
+      // If no match, use a Google Maps API search for a location if relevant
+      if (text.includes("map") || text.includes("location")) {
+        const searchQuery = text.replace("location", "").replace("map", "").trim();
+        if (searchQuery) {
+          const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";  // Replace with your actual API key
+          const apiUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchQuery}&key=${apiKey}`;
+    
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+    
+          if (data.results && data.results.length > 0) {
+            const place = data.results[0];
+            const locationInfo = `Found location: ${place.name} - ${place.formatted_address}`;
+            addMessage(locationInfo, "bot");
+          } else {
+            addMessage("Sorry, no location found for your search.", "bot");
           }
         }
-    
-        addMessage(response.replace(/<br>/g, "<br>"), "bot");
       } else {
-        // Try mapdata fallback
-        const mapMatch = maps.find(entry => text.includes(entry.name?.toLowerCase()));
-        if (mapMatch) {
-          const mapResponse = `Here is information about <b>${mapMatch.name}</b>:<br>${mapMatch.description || "No description available."}`;
-          addMessage(mapResponse, "bot");
-        } else {
-          addMessage("I couldn't understand that. Try asking something else or use the help button above.", "bot");
-        }
+        addMessage("I'm not sure how to respond to that. Could you try again?", "bot");
       }
+    }
+    
+    // Add message to chat window
+    function addMessage(message, sender) {
+      const chatWindow = document.getElementById("chatWindow");
+      const messageElement = document.createElement("div");
+      messageElement.className = sender;
+      messageElement.textContent = message;
+      chatWindow.appendChild(messageElement);
+      chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the bottom
     }
   </script>
 </body>
