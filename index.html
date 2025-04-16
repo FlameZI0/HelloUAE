@@ -321,14 +321,6 @@
        
          chatContainer.scrollTop = chatContainer.scrollHeight;
        }
-   
-       const fuseOptions = {
-         includeScore: true,
-         threshold: 0.2, // or your preferred value
-         keys: ["keywords", "prompts"], // ✅ No square brackets
-         minMatchCharLength: 3,
-         useExtendedSearch: true
-       };
 
 
        async function sendMessage() {
@@ -414,6 +406,13 @@
          
          // Step 2: If a new intent matched, use it and store it
          if (matchedIntents.length > 0) {
+            const fuseOptions = {
+            includeScore: true,
+            threshold: 0.2, // or your preferred value
+            keys: ["keywords", "prompts"], // ✅ No square brackets
+            minMatchCharLength: 3,
+            useExtendedSearch: true
+            };
            const intent = matchedIntents[0];
            const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
            lastMatchedIntent = intent;
