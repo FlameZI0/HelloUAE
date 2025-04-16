@@ -358,16 +358,6 @@
         addMessage("I'm not sure how to respond to that. Could you try again?", "bot");
       }
     }
-    
-    // Add message to chat window
-    function addMessage(message, sender) {
-      const chatWindow = document.getElementById("chatWindow");
-      const messageElement = document.createElement("div");
-      messageElement.className = sender;
-      messageElement.textContent = message;
-      chatWindow.appendChild(messageElement);
-      chatWindow.scrollTop = chatWindow.scrollHeight;  // Scroll to the bottom
-    }
   </script>
 </body>
 </html>
