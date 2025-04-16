@@ -400,6 +400,8 @@
         // Context check
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
+          console.log("Checking for context in:", lastMatchedIntent.context);
+          console.log("User text is:", text);
           if (index !== -1 && lastMatchedIntent.contextAnswers[index]) {
             const contextResponse = lastMatchedIntent.contextAnswers[index];
             console.log("Matched context:", lastMatchedIntent.context[index]);
