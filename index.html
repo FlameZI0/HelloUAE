@@ -378,8 +378,8 @@
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
         const matchedIntents = result.map(item => item.item);
-
-        // Respond to new intent first & save it
+        
+        // 🟢 Respond to new intent first & save it
         if (matchedIntents.length > 0) {
           const intent = matchedIntents[0];
           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
@@ -389,7 +389,7 @@
           return;
         }
         
-        // ✅ Then try context
+        // ✅ If no intent matched, check context from previous intent
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           console.log("Checking for context in:", lastMatchedIntent.context);
@@ -403,10 +403,9 @@
           }
         }
         
-        // Fallback
+        // 🔴 Fallback if nothing matched
         console.log("No map/intent/context matched. Using fallback.");
         await addMessage("I don't have a response for that yet.", "bot");
-
     }
     </script>
   </body>
