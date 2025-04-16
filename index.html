@@ -345,7 +345,6 @@
            db.collection("intents").get(),
            db.collection("mapdata").get()
          ]);
-     <script src="indexcode.js"></script>
  
          const intents = intentSnap.docs.map(doc => doc.data());
          const maps = mapSnap.docs.map(doc => doc.data());
