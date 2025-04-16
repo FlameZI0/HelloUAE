@@ -377,15 +377,17 @@
         // Check intents if no mapdata matched
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
-    
         const matchedIntents = result.map(item => item.item);
-
-        // Update lastMatchedIntent
+        
+        // Regular intent answer if no context
         if (matchedIntents.length > 0) {
-          lastMatchedIntent = matchedIntents[0];
+          const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
+          console.log("Responding with intent answer:", response);
+          await addMessage(response, "bot");
+          return;
         }
         
-        // Context check
+        // ✅ Try to respond to context FIRST using previous intent
         if (lastMatchedIntent?.context?.length > 0 && lastMatchedIntent?.contextAnswers?.length > 0) {
           const index = lastMatchedIntent.context.findIndex(c => text.includes(c));
           console.log("Checking for context in:", lastMatchedIntent.context);
@@ -399,8 +401,9 @@
           }
         }
         
-        // Regular intent answer if no context
+        // 🟢 No context match — now update lastMatchedIntent
         if (matchedIntents.length > 0) {
+          lastMatchedIntent = matchedIntents[0];
           const response = lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)];
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
