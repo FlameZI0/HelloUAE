@@ -319,43 +319,37 @@
         document.getElementById("userInput").value = "";
     }
 
-    async function getResponse(userInput) {
-      const db = firebase.firestore();
-      const inputLower = userInput.toLowerCase();
     
-      // Step 1: Check if it's a follow-up context like "how", "when", "cost"
+          async function getResponse(userInput) {
+      const inputLower = userInput.toLowerCase();
+
+      // Step 1: Handle context-based follow-ups
       if (lastIntent && lastIntent.context && lastIntent.contextAnswers) {
         const contextIndex = lastIntent.context.indexOf(inputLower);
-        if (contextIndex !== -1) {
+        if (contextIndex !== -1 && lastIntent.contextAnswers[contextIndex]) {
           return lastIntent.contextAnswers[contextIndex];
         }
       }
-    
-      // Step 2: Check Firestore for matching intent
-      const intentsRef = db.collection('intents');
-      const snapshot = await intentsRef.get();
-    
-      for (const doc of snapshot.docs) {
-        const data = doc.data();
-        const prompts = data.prompts || [];
-        const keywords = data.keywords || [];
-    
-        const matchesPrompt = prompts.some(p => inputLower.includes(p));
-        const matchesKeyword = keywords.some(k => inputLower.includes(k));
-    
-        if (matchesPrompt || matchesKeyword) {
-          // Save context for next message
-          lastIntent = data;
-          lastIntentName = data.intent_name;
-    
-          // Return answer
-          const answers = data.answers;
-          return Array.isArray(answers) ? answers[0] : answers;
-        }
+
+      // Step 2: Fetch intents from Firestore
+      const snapshot = await db.collection("intents").get();
+      const intents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Step 3: Fuse.js for fuzzy matching
+      const fuse = new Fuse(intents, fuseOptions);
+      const result = fuse.search(inputLower);
+
+      if (result.length > 0) {
+        const bestMatch = result[0].item;
+        lastIntent = bestMatch;
+        lastIntentName = bestMatch.id;
+        return bestMatch.answer;
       }
-    
-      // Step 3: If no match found
-      return "I'm not sure about that. Could you ask something else?";
+
+      // Step 4: Fallback message
+      lastIntent = null;
+      lastIntentName = null;
+      return "I'm not sure about that. Can you rephrase or ask something else?";
     }
   </script>
 </body>
