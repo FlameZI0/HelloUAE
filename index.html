@@ -374,18 +374,6 @@
           }
         }
     
-        // Context handling: Check if the last matched intent has context
-        if (lastMatchedIntent && lastMatchedIntent.context) {
-            const contextMatch = lastMatchedIntent.context.some(context => text.includes(context));
-            if (contextMatch) {
-              // Respond with a context-specific answer
-              const contextAnswer = lastMatchedIntent.contextAnswers[Math.floor(Math.random() * lastMatchedIntent.contextAnswers.length)];
-              console.log("Responding with context answer:", contextAnswer);
-              await addMessage(contextAnswer, "bot");
-              return;
-            }
-        }
-    
         // Check intents if no mapdata matched
         const fuse = new Fuse(intents, fuseOptions);
         const result = fuse.search(text);
