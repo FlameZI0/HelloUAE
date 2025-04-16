@@ -281,13 +281,32 @@
         auth.signOut();
       }
   
-      function addMessage(message, sender, isHTML = true) {
-        const chatBox = document.getElementById("chat-box");
-        const messageElement = document.createElement("div");
-        messageElement.classList.add("message", sender === "user" ? "message-user" : "message-bot");
-        messageElement.innerHTML = isHTML ? message : message.replace(/\n/g, "<br>");
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
+      async function addMessage(text, sender) {
+        const chatContainer = document.getElementById("chat");
+        const messageEl = document.createElement("div");
+        messageEl.className = sender === "bot" ? "bot-message" : "user-message";
+        messageEl.innerHTML = text.replace(/\n/g, "<br>");
+        chatContainer.appendChild(messageEl);
+        // ✅ Add feedback buttons if it's a bot response
+        if (sender === "bot") {
+          lastBotResponse = text; // store for feedback use
+          const feedbackContainer = document.createElement("div");
+          feedbackContainer.className = "feedback-buttons";
+          
+          const thumbsUp = document.createElement("button");
+          thumbsUp.textContent = "👍";
+          thumbsUp.onclick = () => sendFeedback("positive");
+      
+          const thumbsDown = document.createElement("button");
+          thumbsDown.textContent = "👎";
+          thumbsDown.onclick = () => sendFeedback("negative");
+      
+          feedbackContainer.appendChild(thumbsUp);
+          feedbackContainer.appendChild(thumbsDown);
+          chatContainer.appendChild(feedbackContainer);
+        }
+      
+        chatContainer.scrollTop = chatContainer.scrollHeight;
       }
   
       const fuseOptions = {
@@ -297,8 +316,10 @@
         minMatchCharLength: 3,
         useExtendedSearch: true
       };
-
-  
+      
+      let lastUserMessage = "";
+      let lastBotResponse = "";
+      
       async function sendMessage() {
         const input = document.getElementById("userInput").value.replace(/[.,\/#!$%\^&\*;:{}=\-_~()?"']/g, "");
         const text = input.toLowerCase();
@@ -386,6 +407,9 @@
           lastMatchedIntent = intent;
           console.log("Responding with intent answer:", response);
           await addMessage(response, "bot");
+          lastBotResponse = response; // Save what bot replied
+          addFeedbackButtons(); // Add feedback buttons
+
         }
         
         // Step 3: Else, check context if the current text includes any of the saved context triggers
@@ -406,7 +430,47 @@
           console.log("No map/intent/context matched. Using fallback.");
           await addMessage("I don't have a response for that yet.", "bot");
         }
-      }     
+      }
+      function addFeedbackButtons() {
+        const lastMessage = document.querySelector(".message.bot:last-child");
+        const feedbackDiv = document.createElement("div");
+        feedbackDiv.className = "feedback";
+        feedbackDiv.style.marginTop = "5px";
+      
+        feedbackDiv.innerHTML = `
+          <button onclick="sendFeedback('positive')">👍</button>
+          <button onclick="sendFeedback('negative')">👎</button>
+        `;
+      
+        lastMessage.appendChild(feedbackDiv);
+      }
+      async function sendFeedback(feedbackType) {
+        try {
+          const user = firebase.auth().currentUser;
+      
+          if (!user || !lastMatchedIntent) {
+            console.warn("User not signed in or intent not matched.");
+            return;
+          }
+      
+          const feedbackRef = firebase.firestore()
+            .collection("feedback")
+            .doc(`${user.uid}_${lastMatchedIntent.intent_name || "unknown"}`);
+      
+          await feedbackRef.set({
+            prompt: lastUserMessage,
+            response: lastBotResponse,
+            feedback: feedbackType,
+            user: user.uid,
+            intentId: lastMatchedIntent.id || lastMatchedIntent.intent_id || lastMatchedIntent.name || "unknown",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+      
+          alert("Thanks for the feedback!");
+        } catch (err) {
+          console.error("Error sending feedback:", err);
+        }
+      }
     </script>
   </body>
   </html>
