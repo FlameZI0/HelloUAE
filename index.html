@@ -405,24 +405,29 @@
          const matchedIntents = result.map(item => item.item);
          
          // Step 2: If a new intent matched, use it and store it
-         if (matchedIntents.length > 0) {
-            const fuseOptions = {
-            includeScore: true,
-            threshold: 0.2, // or your preferred value
-            keys: ["keywords", "prompts"], // ✅ No square brackets
-            minMatchCharLength: 3,
-            useExtendedSearch: true
-            };
-           const intent = matchedIntents[0];
-           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)];
-           lastMatchedIntent = intent;
-           console.log("Responding with intent answer:", response);
-           await addMessage(response, "bot");
-           lastBotResponse = response;
-           if (math.Random() > 0.1) {// Save what bot replied
-             addFeedbackButtons(); // Add feedback buttons
-           }
-         }
+         if (mapResults.length > 0) {
+           for (const res of mapResults) {
+                   await addMessage(res.answer + "<br>" + res.iframe, "bot");
+                 }
+                 return;
+               } else {
+                 console.log("No map matches found.");
+               }
+           } // <-- this closes the inner mapdata loop
+         } // <-- this closes: if (mapTriggerUsed)
+
+         // Now run Fuse search OUTSIDE the map block
+         const fuseOptions = {
+           includeScore: true,
+           threshold: 0.2,
+           keys: ["keywords", "prompts"],
+           minMatchCharLength: 3,
+           useExtendedSearch: true
+         };
+         const fuse = new Fuse(intents, fuseOptions);
+         const result = fuse.search(text);
+         const matchedIntents = result.map(item => item.item);
+
          
          // Step 3: Else, check context if the current text includes any of the saved context triggers
          else if (
