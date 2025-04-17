@@ -415,11 +415,7 @@
             const bestMatch = results[0];
             lastMatchedIntent = bestMatch.item;
             addMessage(lastMatchedIntent.answers[Math.floor(Math.random() * lastMatchedIntent.answers.length)], "bot");
-        } else {
-            addMessage("Sorry, I couldn't find an answer for that.", "bot");
-        }      
-         // Step 3: Else, check context if the current text includes any of the saved context triggers
-         else if (
+        } else if (
            lastMatchedIntent?.context?.length > 0 &&
            lastMatchedIntent?.contextAnswers?.length > 0 &&
            lastMatchedIntent.context.some(c => text.includes(c)) // 👈 only try if there's a match
