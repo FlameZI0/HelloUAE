@@ -399,10 +399,6 @@
                } else {
                  console.log("No map matches found.");  // Handle the case where no maps were found
                }
-     
-         const fuse = new Fuse(intents, fuseOptions);
-         const result = fuse.search(text);
-         const matchedIntents = result.map(item => item.item);
          
          // Step 2: If a new intent matched, use it and store it
          if (mapResults.length > 0) {
@@ -429,6 +425,22 @@
          const matchedIntents = result.map(item => item.item);
 
          
+        // Step 2: If a new intent matched, use it and store it
+         if (matchedIntents.length > 0) {
+           const intent = matchedIntents[0];  // Take the first match
+           const response = intent.answers[Math.floor(Math.random() * intent.answers.length)]; // Random response from the matched intent
+          
+           lastMatchedIntent = intent;  // Store the matched intent
+          
+           console.log("Responding with intent answer:", response);
+           await addMessage(response, "bot");  // Send response to the chat
+          
+           lastBotResponse = response;  // Store the bot's response
+          
+           if (Math.random() > 0.1) {  // Random chance to show feedback buttons
+             addFeedbackButtons();  // Show feedback options (👍👎)
+           }
+         }         
          // Step 3: Else, check context if the current text includes any of the saved context triggers
          else if (
            lastMatchedIntent?.context?.length > 0 &&
