@@ -399,18 +399,6 @@
                } else {
                  console.log("No map matches found.");  // Handle the case where no maps were found
                }
-         
-         // Step 2: If a new intent matched, use it and store it
-         if (mapResults.length > 0) {
-           for (const res of mapResults) {
-                   await addMessage(res.answer + "<br>" + res.iframe, "bot");
-                 }
-                 return;
-               } else {
-                 console.log("No map matches found.");
-               }
-           } // <-- this closes the inner mapdata loop
-         } // <-- this closes: if (mapTriggerUsed)
 
          // Now run Fuse search OUTSIDE the map block
          const fuseOptions = {
