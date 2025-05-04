@@ -5,7 +5,182 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DuneAI</title>
   <style>
-    /* Your styles here */
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1, p {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    /* Header and Authentication Bar */
+    #auth-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1a1a1a;
+      color: white;
+      padding: 10px 20px;
+      width: 100%;
+    }
+
+    #user-pfp {
+      border-radius: 50%;
+    }
+
+    #logout-btn {
+      background-color: #ff4f58;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #logout-btn:hover {
+      background-color: #e60000;
+    }
+
+    /* Sign-in Buttons */
+    #signins {
+      margin-top: 20px;
+    }
+
+    #google-signin, #anonymous-signin {
+      background-color: #4285F4;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    #google-signin:hover, #anonymous-signin:hover {
+      background-color: #357ae8;
+    }
+
+    /* Logo Section */
+    #logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    #logo img {
+      width: 150px;
+      height: auto;
+      margin-top: 10px;
+    }
+
+    #help {
+      text-decoration: none;
+      color: #4285F4;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #help:hover {
+      text-decoration: underline;
+    }
+
+    /* Chat Section */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background-color: #ffffff;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    #chat-box {
+      overflow-y: auto;
+      height: 400px;
+      margin-bottom: 10px;
+      padding-right: 5px;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #userInput {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #4285F4;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #357ae8;
+    }
+
+    .user-message {
+      background-color: #e5e5e5;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 5px 0;
+      max-width: 80%;
+      align-self: flex-start;
+    }
+
+    .bot-message {
+      background-color: #d0e7ff;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 5px 0;
+      max-width: 80%;
+      align-self: flex-end;
+    }
+
+    /* Feedback Buttons */
+    .feedback-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .feedback-buttons button {
+      background-color: transparent;
+      border: 1px solid #ddd;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .feedback-buttons button:hover {
+      background-color: #f1f1f1;
+    }
   </style>
 </head>
 <body>
